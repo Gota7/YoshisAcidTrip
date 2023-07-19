@@ -1,0 +1,10 @@
+.vscode/
+bin/
+build/
+res/tests/
+res/BUILDTIME
+./run
+./clean
+!src/bin
+run
+clean

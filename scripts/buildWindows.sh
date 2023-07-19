@@ -1,0 +1,1 @@
+scripts/buildCore.sh windows

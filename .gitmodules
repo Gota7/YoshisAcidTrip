@@ -1,0 +1,13 @@
+[submodule "subs/tracy"]
+	path = subs/tracy
+	url = https://github.com/wolfpld/tracy
+	branch = v0.8.2.1
+[submodule "subs/glm"]
+	path = subs/glm
+	url = https://github.com/g-truc/glm
+[submodule "subs/glfw"]
+	path = subs/glfw
+	url = https://github.com/glfw/glfw
+[submodule "subs/imgui"]
+	path = subs/imgui
+	url = https://github.com/ocornut/imgui
