@@ -1,19 +1,22 @@
 #include <jsystem/shader.hpp>
 
-#include <jsystem/fs.hpp>
 #include <glm/ext.hpp>
-#include <iostream>
 
 JShader* CurrShader = nullptr;
 
-std::optional<JShaderID> JShader::CompileShader(const std::string& path, GLenum type)
+std::optional<JShaderID> JShader::CompileShader(const JResPath& path, GLenum type)
 {
     ZoneScopedN("JShader::CompileShader");
 
     // Load and compile shader.
-    JShaderID shader = glCreateShader(GL_VERTEX_SHADER);
+    if (!JFileSystem::FileExists(path))
+    {
+        DBG_PRINT("ERROR@JUNO: Shader file \"" << path.fullPath << "\" does not exist!");
+        return std::nullopt;
+    }
+    JShaderID shader = glCreateShader(type);
     auto data = JFileSystem::ReadAllLines(path);
-    const char* dataStr = path.c_str();
+    const char* dataStr = data.c_str();
     glShaderSource(shader, 1, &dataStr, nullptr);
     glCompileShader(shader);
     GLint success;
@@ -22,14 +25,14 @@ std::optional<JShaderID> JShader::CompileShader(const std::string& path, GLenum 
     if (!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cout << "ERROR@LSD: SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+        DBG_PRINT("ERROR@JUNO: SHADER::COMPILATION_FAILED, Shader: \"" << path.fullPath << "\"\n" << infoLog);
         return std::nullopt;
     }
     return std::optional<JShaderID>(shader);
 
 }
 
-JShader::JShader(const std::string& vertexPath, const std::string& fragmentPath, const std::vector<std::pair<std::string, unsigned int>>& individualMembers, size_t structSize)
+JShader::JShader(const JResPath& vertexPath, const JResPath& fragmentPath, const std::vector<std::pair<std::string, unsigned int>>& individualMembers, size_t structSize)
 {
     ZoneScopedN("JShader::JShader");
 
@@ -52,7 +55,7 @@ JShader::JShader(const std::string& vertexPath, const std::string& fragmentPath,
     if (!success)
     {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
-        std::cout << "ERROR@LSD: SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        DBG_PRINT("ERROR@JUNO: SHADER::PROGRAM::LINKING_FAILED\n" << infoLog);
     }
     glDeleteShader(vertexShader.value());
     glDeleteShader(fragmentShader.value());
@@ -76,6 +79,7 @@ int JShader::GetUniformLocation(const std::string& name)
     if (item == uniformLocations.end())
     {
         int ret = glGetUniformLocation(program, name.c_str());
+        assert(ret != -1);
         uniformLocations[name] = ret;
         return ret;
     }

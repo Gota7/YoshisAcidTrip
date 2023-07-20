@@ -1,7 +1,5 @@
 #include <texture/loader.hpp>
 
-#include <iostream>
-
 JPtr<TFormat> TLoader::LoadTexture(const JResPath& path)
 {
     ZoneScopedN("TLoader::LoadTexture");
@@ -13,12 +11,12 @@ JPtr<TFormat> TLoader::LoadTexture(const JResPath& path)
     if (res != Formats.end())
     {
         loader = res->second;
-        std::cout << "TEXTURE@JUNO: Loading \"" << path.fullPath << "\"." << std::endl;
+        DBG_PRINT("TEXTURE@JUNO: Loading \"" << path.fullPath << "\".");
         return loader(path);
     }
     else
     {
-        std::cout << "TEXTURE@JUNO: Can not determine file type of file \"" << path.fullPath << "\"." << std::endl;
+        DBG_PRINT("TEXTURE@JUNO: Can not determine file type of file \"" << path.fullPath << "\".");
         return nullptr;
     }
 

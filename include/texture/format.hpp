@@ -12,10 +12,10 @@ class TFormat
 public:
 
     // Get texture properties.
-    virtual void Properties(int& width, int& height, int& numChannels) = 0;
+    virtual void Properties(int& width, int& height, int& numChannels) const = 0;
 
     // Get a pointer to the data. Assume it is in R8G8B8A8 format.
-    virtual const void* DataPtr() = 0;
+    virtual const void* DataPtr() const = 0;
 
     // Free the texture.
     virtual ~TFormat() {}

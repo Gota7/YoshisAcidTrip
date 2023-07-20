@@ -1,6 +1,6 @@
 #pragma once
 
-#include "constants.h"
+#include <common.hpp>
 #include <memory>
 
 // Memory allocation functions, can be modified to use from custom heap. Also is a lot less typing, seriously why is it SO LONG to type out one of the best C++ features.

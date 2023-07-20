@@ -2,7 +2,7 @@
 
 #include "endian.h"
 #include "source.h"
-#include <constants.h>
+#include <common.hpp>
 #include <iostream>
 #include <string>
 #include <types.h>

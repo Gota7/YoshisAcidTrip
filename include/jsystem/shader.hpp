@@ -1,5 +1,6 @@
 #pragma once
 
+#include <jsystem/fs.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -8,6 +9,9 @@
 #include <optional>
 #include <string>
 #include <vector>
+
+// Forward declare.
+class JUniformBuffer;
 
 using JShaderID = GLuint;
 using JShaderProgramID = GLuint;
@@ -18,13 +22,16 @@ class JShader
     std::map<std::string, int> uniformLocations; // Locations for each uniform.
     JShaderProgramID program; // ID for the shader program.
 
+    // Friends :}
+    friend class JUniformBuffer;
+
 public:
 
     // Load a shader program. Has strings for shader uniform members and byte offsets.
-    JShader(const std::string& vertexPath, const std::string& fragmentPath, const std::vector<std::pair<std::string, unsigned int>>& individualMembers, size_t structSize);
+    JShader(const JResPath& vertexPath, const JResPath& fragmentPath, const std::vector<std::pair<std::string, unsigned int>>& individualMembers, size_t structSize);
 
     // Compile a shader file. Returns it if it succeeds. Need to free shader if it succeeds.
-    static std::optional<JShaderID> CompileShader(const std::string& path, GLenum type);
+    static std::optional<JShaderID> CompileShader(const JResPath& path, GLenum type);
 
     // Bind the shader.
     void Bind();

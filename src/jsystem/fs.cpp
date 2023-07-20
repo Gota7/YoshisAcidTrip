@@ -58,7 +58,7 @@ std::string JFileSystem::PathSeparators(const std::string& path)
 
 #endif
 
-#ifdef DEBUG
+#ifdef __DEBUG__
 
 std::string JFileSystem::AbsPath(const std::string& path)
 {

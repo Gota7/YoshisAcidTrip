@@ -24,8 +24,8 @@ public:
     }
 
     // Vfunctions.
-    virtual void Properties(int& width, int& height, int& numChannels) override;
-    virtual const void* DataPtr() override;
+    virtual void Properties(int& width, int& height, int& numChannels) const override;
+    virtual const void* DataPtr() const override;
     virtual ~TFormatCommon() override;
 
 };

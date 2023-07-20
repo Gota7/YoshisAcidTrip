@@ -1,7 +1,8 @@
 #pragma once
 
 #include <jsystem/fs.hpp>
-#include <jsystem/textureAnim.h>
+#include <jsystem/textureAnim.hpp>
+#include <texture/loader.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -19,6 +20,7 @@ enum JTextureUnit
 };
 
 // Forward declare.
+class JFrameBuffer;
 class JShader;
 
 // Texture ID.
@@ -34,10 +36,19 @@ class JTexture
     int numChannels;
     bool cubemap = false;
 
+    // Friends :}
+    friend class JFrameBuffer;
+
 public:
+
+    // Create a texture from a format. Will bind the texture.
+    JTexture(const TFormat& texData);
 
     // Create a texture from a path. Will bind the texture.
     JTexture(const JResPath& path);
+
+    // Create a cubemap texture formats. Will bind the texture.
+    JTexture(const TFormat& right, const TFormat& left, const TFormat& top, const TFormat& bottom, const TFormat& front, const TFormat& back);
 
     // Create a cubemap texture. Will bind the texture.
     JTexture(const JResPath& right, const JResPath& left, const JResPath& top, const JResPath& bottom, const JResPath& front, const JResPath& back);
