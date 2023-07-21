@@ -14,25 +14,8 @@ public:
     // Set the position. Returns absolute position. If a writer, will add empty bytes if needed, else will just go back to the beginning.
     virtual std::streampos Seek(std::streamoff off, std::ios::seekdir dir = std::ios::beg) = 0;
 
-    // Set the position. Returns absolute position.
-    std::streampos Seek(const std::streampos& pos)
-    {
-        return Seek(std::streamoff(pos), std::ios::beg);
-    }
-
     // Get the position.
     virtual std::streampos Tell() = 0;
-
-    // Align the reader.
-    bool Align(unsigned int alignment)
-    {
-        std::streampos pos;
-        while (pos = Tell(), pos % alignment)
-        {
-            if ((long)Seek(1, std::ios::cur) != (long)pos + 1) return false;
-        }
-        return true;
-    }
 
     // Read data from the stream. Returns if successful. Only supported on some stream types.
     virtual bool Read(void* dest, std::size_t len)
@@ -44,6 +27,26 @@ public:
     virtual bool Write(const void* src, std::size_t len)
     {
         return false;
+    }
+
+    // Destructor.
+    virtual ~BStream() = 0;
+
+    // Set the position. Returns absolute position.
+    std::streampos Seek(const std::streampos& pos)
+    {
+        return Seek(std::streamoff(pos), std::ios::beg);
+    }
+
+    // Align the reader.
+    bool Align(unsigned int alignment)
+    {
+        std::streampos pos;
+        while (pos = Tell(), pos % alignment)
+        {
+            if ((long)Seek(1, std::ios::cur) != (long)pos + 1) return false;
+        }
+        return true;
     }
 
     // Read data from the stream. Item must be default-constructible.
@@ -154,8 +157,5 @@ public:
     {
         Write(str.data(), str.size() + 1);
     }
-
-    // Destructor.
-    virtual ~BStream() = 0;
 
 };
