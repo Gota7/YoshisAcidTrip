@@ -3,9 +3,11 @@ bin/
 build/
 res/tests/
 res/BUILDTIME
+res/NSMBUDX
 ./run
 ./clean
 !src/bin
+!include/bin
 run
 clean
-NSMBUDX
+lsd.desktop

@@ -84,6 +84,15 @@ namespace JFileSystem
         return ret;
     }
 
+    // Write all bytes to a file.
+    inline void WriteAllBytes(const JResPath& path, const std::vector<char>& bytes)
+    {
+        auto ofs = SaveFile(path);
+        ofs.seekp(0);
+        ofs.write(bytes.data(), bytes.size());
+        ofs.close();
+    }
+
     // Read a null terminated string.
     inline std::string ReadNullTerminated(std::ifstream& file)
     {
