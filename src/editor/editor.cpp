@@ -1,5 +1,9 @@
 #include <editor/editor.hpp>
 
+#include <bin/formats/yaz0.hpp>
+#include <bin/streams/file.hpp>
+#include <bin/streams/memory.hpp>
+
 EEditor::EEditor(JWindow& window) :
 window(window),
 shdTest(JResPath("shd/test.vert"), JResPath("shd/test.frag"), {}, 0),
@@ -12,6 +16,12 @@ tex(JResPath("tex/icon.png"))
     uniforms.Connect(shdTest);
     JVertexUV::SetShaderAttributes(shdTest);
     shdTest.SetInt("tex", 0);
+
+    // Test.
+    BStreamFile szsFile(JResPath("test/Pa1_1-1_1.szs"), BStreamMode::Read);
+    BStreamMemory szs(szsFile);
+    BStreamFile sarc(JResPath("test/Pa1_1-1_1.sarc"), BStreamMode::Write);
+    assert(Yaz0::Decompress(szs, sarc));
 
 }
 

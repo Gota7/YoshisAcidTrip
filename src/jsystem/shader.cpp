@@ -9,6 +9,7 @@ std::optional<JShaderID> JShader::CompileShader(const JResPath& path, GLenum typ
     ZoneScopedN("JShader::CompileShader");
 
     // Load and compile shader.
+    DBG_PRINT("SHADER@JUNO: Loading \"" << path.fullPath << "\".");
     if (!JFileSystem::FileExists(path))
     {
         DBG_PRINT("ERROR@JUNO: Shader file \"" << path.fullPath << "\" does not exist!");

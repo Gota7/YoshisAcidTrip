@@ -4,11 +4,26 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <optional>
+#include <vector>
+
+// Either assigns the declaration an optional value or returns false.
+#define OPT_ASSIGN(decl, tmp, val) tmp = val; if (!tmp) return false; decl = *tmp
+
+// Swap a 16-bit value.
+#define SWAP16(val) ((val & 0xFF) << 8) | ((val & 0xFF00) >> 8)
+#define SWAP32(val) (((val & 0xFF) << 24) | ((val & 0xFF00) << 8) | ((val & 0xFF0000) >> 8) | ((val & 0xFF000000) >> 24))
+
+// Stream mode.
+enum class BStreamMode
+{
+    Read,
+    Write,
+    ReadWrite
+};
 
 // A general streaming interface.
 class BStream
 {
-
 public:
 
     // Set the position. Returns absolute position. If a writer, will add empty bytes if needed, else will just go back to the beginning.
@@ -30,7 +45,17 @@ public:
     }
 
     // Destructor.
-    virtual ~BStream() = 0;
+    virtual ~BStream() {}
+
+    // Get the stream size.
+    std::size_t Size()
+    {
+        std::streampos bak = Tell();
+        Seek(0, std::ios::end);
+        std::size_t ret = Tell();
+        Seek(bak);
+        return ret;
+    }
 
     // Set the position. Returns absolute position.
     std::streampos Seek(const std::streampos& pos)
@@ -123,15 +148,15 @@ public:
     std::optional<std::string> ReadFixedLenStr(std::size_t len)
     {
         std::string ret = "";
-        std::optional<char> c = Read<char>();
-        if (!c) return std::nullopt;
-        while (len > 0 && *c != 0)
+        std::optional<char> c;
+        do
         {
-            ret += *c;
-            len--;
+            if (len == 0) return ret;
             c = Read<char>();
             if (!c) return std::nullopt;
-        }
+            len--;
+            ret += *c;
+        } while (*c != 0);
         return ret;
     }
 
@@ -155,7 +180,16 @@ public:
     // Write a C-style string.
     bool WriteCStr(const std::string& str)
     {
-        Write(str.data(), str.size() + 1);
+        return Write(str.data(), str.size() + 1);
+    }
+
+    // Write data from another stream to this one.
+    bool Copy(BStream& other, std::size_t len)
+    {
+        std::vector<char> tmp;
+        tmp.resize(len);
+        if (!other.Read(tmp.data(), len)) return false;
+        return Write(tmp.data(), len);
     }
 
 };
