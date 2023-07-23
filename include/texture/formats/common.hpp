@@ -3,8 +3,8 @@
 #include <texture/format.hpp>
 #include <stb_image.h>
 
-// Common texture formats. No idea why this needs to be a struct to work.
-struct TFormatCommon : TFormat
+// Common texture formats.
+class TFormatCommon : public TFormat
 {
 private:
     stbi_uc* texData; // Texture data.

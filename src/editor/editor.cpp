@@ -1,5 +1,6 @@
 #include <editor/editor.hpp>
 
+#include <bin/formats/sarc.hpp>
 #include <bin/formats/yaz0.hpp>
 #include <bin/streams/file.hpp>
 #include <bin/streams/memory.hpp>
@@ -18,10 +19,18 @@ tex(JResPath("tex/icon.png"))
     shdTest.SetInt("tex", 0);
 
     // Test.
-    BStreamFile szsFile(JResPath("test/Pa1_1-1_1.szs"), BStreamMode::Read);
-    BStreamMemory szs(szsFile);
-    BStreamFile sarc(JResPath("test/Pa1_1-1_1.sarc"), BStreamMode::Write);
+    BStreamFile szs(JResPath("test/Pa1_1-1_1.szs"), BStreamMode::Read);
+    BStreamMemory sarc(BStreamMode::ReadWrite);
     assert(Yaz0::Decompress(szs, sarc));
+    sarc.Seek(0);
+    SARC sarcFile(sarc);
+    for (auto& filename : sarcFile.GetFilenames())
+    {
+        DBG_PRINT(filename);
+    }
+    BStreamFile bfres(JResPath("test/output.bfres"), BStreamMode::Write);
+    auto& bfresMem = sarcFile.Open("output.bfres", BStreamMode::Read);
+    bfres.Copy(bfresMem, bfresMem.Size());
 
 }
 

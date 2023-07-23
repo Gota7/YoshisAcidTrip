@@ -68,6 +68,7 @@ public:
         if (mode == BStreamMode::Read) return false;
         if (pos + len > data.size()) data.resize(pos + len);
         memcpy(data.data() + pos, src, len);
+        pos += len;
         return true;
     }
 
