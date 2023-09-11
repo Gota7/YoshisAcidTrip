@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <imgui.h>
+#include <imgui/imgui_impl_opengl3.hpp>
 #include <string>
 
 using JWindowCallback = std::function<void()>;
@@ -41,7 +43,7 @@ public:
     JWindow(const std::string& title);
 
     // Window main loop with custom main loop callback.
-    void Main(const JWindowCallback& mainCallback = JWindowCallback(nullptr), const JWindowCallback& renderCallback = JWindowCallback(nullptr));
+    void Main(const JWindowCallback& mainCallback = JWindowCallback(nullptr), const JWindowCallback& renderCallback = JWindowCallback(nullptr), const JWindowCallback& drawUICallback = JWindowCallback(nullptr));
 
     // Set the size of the window.
     void SetSize(int width, int height);

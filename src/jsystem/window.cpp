@@ -2,6 +2,8 @@
 
 #include <jsystem/frameBuffer.hpp>
 #include <texture/loader.hpp>
+#include <imgui/imgui_impl_glfw.hpp>
+#include <imgui/imgui_impl_opengl3.hpp>
 #include <iostream>
 
 // For resize callback.
@@ -84,6 +86,13 @@ JWindow::JWindow(const std::string& title)
 
     // Create main window.
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, title.c_str(), NULL, NULL);
+    if (!window)
+    {
+        const char* desc;
+        int id = glfwGetError(&desc);
+        printf("GLFW being big stupid :< %d: %s\n", id, desc);
+        abort();
+    }
     glfwSetWindowTitle(window, title.c_str());
     width = SCR_WIDTH;
     height = SCR_HEIGHT;
@@ -140,9 +149,19 @@ JWindow::JWindow(const std::string& title)
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+    // ImGui init.
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    // ImGui_ImplGlfw_InitForOpenGL(window, true);
+    const char* glsl_version = "#version 130";
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
 }
 
-void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& renderCallback)
+void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& renderCallback, const JWindowCallback& drawUICallback)
 {
 
     // Main loop, pretty straitforward.
@@ -153,7 +172,6 @@ void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& r
         if (renderCallback && (fps != 1 || needsRender)) renderCallback();
         JFrameBuffer::EndRender();
         UpdateFrame();
-        glfwSwapBuffers(window);
 #ifdef __DEBUG__
         // TracyGpuCollect;
 #endif
@@ -161,6 +179,14 @@ void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& r
             ZoneScopedN("GLFW Poll Events");
             glfwPollEvents();
         }
+
+        // ImGui.
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        if (drawUICallback) drawUICallback();
+        // ImGui::ShowDemoWindow();
+
 #ifdef __DEBUG__
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
 #endif
@@ -188,7 +214,13 @@ void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& r
             }
         }
         else fullscreenKeyDown = false;
+
+         // Rendering
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
         FrameMark;
+
     }
 
 }
@@ -245,6 +277,9 @@ float JWindow::GetActualFPS() const
 
 JWindow::~JWindow()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     // JFrameBuffer::CleanupMainBuffer();
     glfwDestroyWindow(window);
     glfwTerminate();

@@ -10,4 +10,7 @@ res/NSMBUDX
 !include/bin
 run
 clean
+profile
 lsd.desktop
+Tracy-release
+imgui.ini

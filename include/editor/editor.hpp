@@ -1,5 +1,7 @@
 #pragma once
 
+#include <editor/level.hpp>
+#include <editor/settings.hpp>
 #include <jsystem/renderBatch.hpp>
 #include <jsystem/shader.hpp>
 #include <jsystem/texture.hpp>
@@ -13,10 +15,21 @@ class JWindow;
 class EEditor
 {
     JWindow& window;
+    JPtr<ELevel> level;
+    ESettings settings;
     JUniformBuffer uniforms;
     JShader shdTest;
     JRenderBatch<JVertexUV> renderBatch;
     JTexture tex;
+
+    // Draw the main bar.
+    void DrawMainBar();
+
+    // Draw about popup.
+    void DrawAboutPopup();
+
+    // Draw popups.
+    void DrawPopups();
 
 public:
 
@@ -25,6 +38,9 @@ public:
 
     // Update the editor.
     void Update();
+
+    // Draw editor UI.
+    void DrawUI();
 
     // Render the editor.
     void Render();

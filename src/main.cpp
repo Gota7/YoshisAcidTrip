@@ -14,12 +14,17 @@ void Render()
     MainEditor->Render();
 }
 
+void DrawUI()
+{
+    MainEditor->DrawUI();
+}
+
 int main()
 {
     JWindow window(APP_TITLE);
     MainEditor = JPtrMake(EEditor, window);
     DBG_PRINT("BUILDTIME@JUNO: " << JFileSystem::ReadAllLines(JResPath("BUILDTIME")));
-    window.Main(Update, Render);
+    window.Main(Update, Render, DrawUI);
     MainEditor.reset();
     return 0;
 }

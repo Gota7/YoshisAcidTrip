@@ -53,7 +53,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fpermissive -Wall -Wextra -Wno-unused-parameter")
 if (${STATIC_BUILD} AND NOT WIN32) # Windows seems to act weird with link time optimization enabled.
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+	# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 endif()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 set(CMAKE_CXX_STANDARD 20)
