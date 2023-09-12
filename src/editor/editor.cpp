@@ -8,6 +8,7 @@
 
 EEditor::EEditor(JWindow& window) :
 window(window),
+styleEditor(settings),
 shdTest(JResPath("shd/test.vert"), JResPath("shd/test.frag"), {}, 0),
 renderBatch(1, JRenderBatchMode::Quads),
 tex(JResPath("tex/icon.png"))
@@ -107,6 +108,7 @@ void EEditor::DrawUI()
     ZoneScopedN("EEditor::DrawUI");
     DrawMainBar();
     DrawPopups();
+    styleEditor.DrawUI();
 }
 
 void EEditor::Render()

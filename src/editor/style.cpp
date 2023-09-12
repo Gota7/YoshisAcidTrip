@@ -1,11 +1,14 @@
 #include <editor/style.hpp>
 
 #include <editor/inicpp.hpp>
+#include <iostream>
+
+const JResPath STYLE_DEFAULT = JResPath("default");
 
 EStyle::EStyle(const JResPath& path)
 {
     ZoneScopedN("EStyle::EStyle");
-    if (path.fullPath == DEFAULT.fullPath || !JFileSystem::FileExists(path))
+    if (path.fullPath == STYLE_DEFAULT.fullPath || !JFileSystem::FileExists(path))
     {
         ImGui::StyleColorsClassic(&style);
         return;
@@ -74,6 +77,7 @@ EStyle::EStyle(const JResPath& path)
 void EStyle::Save(const JResPath& path)
 {
     ZoneScopedN("EStyle::Save");
+    if (path.fullPath == STYLE_DEFAULT.fullPath) return;
     ini::IniFile t;
     t["Theme"]["Alpha"] = style.Alpha;
     t["Theme"]["AntiAliasedFill"] = style.AntiAliasedFill;

@@ -2,6 +2,7 @@
 
 #include <editor/level.hpp>
 #include <editor/settings.hpp>
+#include <editor/styleEditor.hpp>
 #include <jsystem/renderBatch.hpp>
 #include <jsystem/shader.hpp>
 #include <jsystem/texture.hpp>
@@ -17,6 +18,9 @@ class EEditor
     JWindow& window;
     JPtr<ELevel> level;
     ESettings settings;
+    EStyleEditor styleEditor;
+
+    // Debug stuff, delete later!
     JUniformBuffer uniforms;
     JShader shdTest;
     JRenderBatch<JVertexUV> renderBatch;
