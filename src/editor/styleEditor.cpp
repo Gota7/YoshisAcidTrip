@@ -2,12 +2,13 @@
 
 #include <editor/settings.hpp>
 #include <editor/utils.hpp>
+#include <jsystem/window.hpp>
 #include <algorithm>
 #include <imgui.h>
 
 const JResPath THEME_FOLDER = JResPath("thm");
 
-EStyleEditor::EStyleEditor(ESettings& settings) : settings(settings)
+EStyleEditor::EStyleEditor(JWindow& window, ESettings& settings) : window(window), settings(settings)
 {
     ZoneScopedN("EStyleEditor::EStyleEditor");
     Scan();
@@ -57,6 +58,16 @@ bool EStyleEditor::GetTheme(void* data, int idx, const char** outText)
     return true;
 }
 
+bool EStyleEditor::GetFont(void* data, int idx, const char** outText)
+{
+    ZoneScopedN("EStyleEditor::GetFont");
+    JWindow* win = (JWindow*)data;
+    std::string& ret = win->GetFontByInd(idx);
+    if (ret == "") return false;
+    *outText = ret.c_str();
+    return true;
+}
+
 void EStyleEditor::DrawUI()
 {
     ZoneScopedN("EStyleEditor::DrawUI");
@@ -74,7 +85,7 @@ void EStyleEditor::DrawUI()
         if (ImGui::Combo("Current Style", &currTheme, GetTheme, this, (int)themes.size()))
         {
             settings.currStyle = JPtrMake(EStyle, ThemePath(themes[currTheme]));
-            settings.currStyle->Set();
+            settings.currStyle->Set(window);
             settings.currTheme = themes[currTheme];
             settings.Save();
         }
@@ -100,7 +111,7 @@ void EStyleEditor::DrawUI()
             {
                 std::filesystem::remove(ThemePath(themes[currTheme]).fullPath);
                 settings.currStyle = JPtrMake(EStyle, ThemePath(themes[0]));
-                settings.currStyle->Set();
+                settings.currStyle->Set(window);
                 settings.currTheme = themes[0];
                 settings.Save();
                 needsScan = true;
@@ -118,6 +129,17 @@ void EStyleEditor::DrawUI()
             style = settings.currStyle->style;
 
         ImGui::Separator();
+        int currFontInd = window.GetIndByFont(settings.currStyle->font);
+        if (ImGui::Combo("Font", &currFontInd, GetFont, &window, window.GetFontCount()))
+        {
+            window.currFont = settings.currStyle->font = window.GetFontByInd(currFontInd);
+        }
+        if (settings.currStyle->font != "Default" && ImGui::DragFloat("Font Size", &settings.currStyle->fontSize, 0.1f, 1.0f, 200.0f))
+        {
+            window.currFontSize = settings.currStyle->fontSize;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Scan Fonts")) window.needsFontScanned = true;
 
         if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
         {

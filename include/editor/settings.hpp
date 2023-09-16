@@ -5,6 +5,9 @@
 #include <jsystem/mem.hpp>
 #include <imgui.h>
 
+// Forward declare.
+class JWindow;
+
 // Editor settings.
 class ESettings
 {
@@ -14,9 +17,9 @@ public:
     JPtr<EStyle> currStyle;
 
     // Make new settings.
-    ESettings() : currStyle(JPtrMake(EStyle, EStyleEditor::ThemePath(currTheme)))
+    ESettings(JWindow& window) : currStyle(JPtrMake(EStyle, EStyleEditor::ThemePath(currTheme)))
     {
-        currStyle->Set();
+        currStyle->Set(window);
     }
 
     // Save settings. TODO!!!

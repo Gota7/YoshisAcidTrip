@@ -1,6 +1,7 @@
 #include <editor/style.hpp>
 
 #include <editor/inicpp.hpp>
+#include <jsystem/window.hpp>
 #include <iostream>
 
 const JResPath STYLE_DEFAULT = JResPath("default");
@@ -14,6 +15,12 @@ EStyle::EStyle(const JResPath& path)
         return;
     }
     ini::IniFile t = ini::IniFile(path.fullPath);
+    font = t["Font"]["Name"].as<std::string>();
+    if (!JFileSystem::FileExists(JFileSystem::PathSeparators("fnt/" + font + ".ttf")))
+    {
+        font = "Default";
+    }
+    fontSize = t["Font"]["Size"].as<float>();
     style.Alpha = t["Theme"]["Alpha"].as<float>();
     style.AntiAliasedFill = t["Theme"]["AntiAliasedFill"].as<bool>();
     style.AntiAliasedLines = t["Theme"]["AntiAliasedLines"].as<bool>();
@@ -79,6 +86,8 @@ void EStyle::Save(const JResPath& path)
     ZoneScopedN("EStyle::Save");
     if (path.fullPath == STYLE_DEFAULT.fullPath) return;
     ini::IniFile t;
+    t["Font"]["Name"] = font;
+    t["Font"]["Size"] = fontSize;
     t["Theme"]["Alpha"] = style.Alpha;
     t["Theme"]["AntiAliasedFill"] = style.AntiAliasedFill;
     t["Theme"]["AntiAliasedLines"] = style.AntiAliasedLines;
@@ -140,10 +149,12 @@ void EStyle::Save(const JResPath& path)
     t.save(path.fullPath);
 }
 
-void EStyle::Set()
+void EStyle::Set(JWindow& window)
 {
     ZoneScopedN("EStyle::Set");
     ImGuiStyle& currStyle = ImGui::GetStyle();
+    window.currFont = font;
+    window.currFontSize = fontSize;
     currStyle.Alpha = style.Alpha;
     currStyle.AntiAliasedFill = style.AntiAliasedFill;
     currStyle.AntiAliasedLines = style.AntiAliasedLines;

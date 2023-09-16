@@ -3,10 +3,15 @@
 #include <jsystem/fs.hpp>
 #include <imgui.h>
 
+// Forward declare.
+class JWindow;
+
 // Editor style.
 class EStyle
 {
     ImGuiStyle style;
+    std::string font = "Default";
+    float fontSize = 12.0f;
 public:
 
     // Friends :>
@@ -19,7 +24,7 @@ public:
     void Save(const JResPath& path);
 
     // Set as the current style.
-    void Set();
+    void Set(JWindow& window);
 
 };
 

@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <imgui/imgui_impl_opengl3.hpp>
+#include <map>
 #include <string>
 
 using JWindowCallback = std::function<void()>;
@@ -17,6 +18,11 @@ using JWindowCallback = std::function<void()>;
 // For a window. This should be a singleton, it is NOT expected to have multiple instances.
 class JWindow
 {
+    std::vector<std::string> fontKeys;
+    std::map<std::string, ImFont*> fonts;
+    std::map<std::string, int> revFonts;
+    std::string oldFont = "Default";
+    float oldFontSize = 12.0f;
     GLFWimage icon;
     GLFWwindow* window;
     double currentFrame = 0; // Current time in seconds.
@@ -36,8 +42,14 @@ class JWindow
     // Update frame information and delta time.
     void UpdateFrame();
 
+    // Work for actually scanning fonts.
+    void DoScanFonts();
+
 public:
+    std::string currFont = "Default"; // Current font in use.
+    float currFontSize = 12.0f;
     bool needsRender = false; // If the window needs to render. Only used if FPS is set to 1.
+    bool needsFontScanned = true; // If available fonts need to be scanned.
 
     // Make a new window.
     JWindow(const std::string& title);
@@ -62,6 +74,18 @@ public:
 
     // Get the actual FPS the system is running at given the current frame.
     float GetActualFPS() const;
+
+    // Get a font by name. If it does not exist, get the default one.
+    ImFont* GetFont(const std::string& name);
+
+    // Get a font name by index. Returns empty string if invalid.
+    std::string& GetFontByInd(int ind);
+
+    // Get index by font.
+    int GetIndByFont(const std::string& name);
+
+    // Get font count.
+    int GetFontCount() const;
 
     // Close window.
     ~JWindow();

@@ -9,6 +9,8 @@
 // For resize callback.
 JWindow* MainWindow;
 
+const JResPath FONT_FOLDER = JResPath("fnt");
+
 #if defined(__DEBUG__) && !defined(__APPLE__)
 void APIENTRY glDebugOutput(GLenum source,
                             GLenum type,
@@ -181,6 +183,23 @@ void JWindow::Main(const JWindowCallback& mainCallback, const JWindowCallback& r
         }
 
         // ImGui.
+        if (needsFontScanned) DoScanFonts();
+        if (oldFont != currFont) ImGui::GetIO().FontDefault = GetFont(currFont);
+        if ((oldFontSize != currFontSize || oldFont != currFont) && currFont != "Default")
+        {
+            std::string path = JResPath(
+                JFileSystem::PathSeparators(FONT_FOLDER.fullPath + "/" + currFont + ".ttf"),
+                true
+            ).fullPath;
+            DBG_PRINT("FONT@LSD: Loading \"" << path << "\".");
+            fonts[currFont] = ImGui::GetIO().Fonts->AddFontFromFileTTF(
+                path.c_str(),
+                currFontSize
+            );
+            DoScanFonts();
+        }
+        oldFont = currFont;
+        oldFontSize = currFontSize;
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -253,6 +272,41 @@ void JWindow::UpdateFrame()
     }
 }
 
+void JWindow::DoScanFonts()
+{
+    static bool scannedOnce = false;
+    auto& io = ImGui::GetIO();
+    if (!scannedOnce)
+    {
+        io.Fonts->ClearFonts();
+        fonts.clear();
+        fontKeys.clear();
+        revFonts.clear();
+        fontKeys.push_back("Default");
+        fonts["Default"] = io.Fonts->AddFontDefault();
+        revFonts["Default"] = 0;
+    }
+    for (auto& file : std::filesystem::directory_iterator(std::filesystem::path(FONT_FOLDER.fullPath)))
+    {
+        if (!file.is_directory() && file.path().extension().string() == ".ttf")
+        {
+            std::string fontName = file.path().filename().replace_extension("").string();
+            if (fonts.find(fontName) == fonts.end())
+            {
+                revFonts[fontName] = fontKeys.size();
+                fontKeys.push_back(fontName);
+                DBG_PRINT("FONT@LSD: Loading \"" << file.path().string() << "\".");
+                fonts[fontName] = io.Fonts->AddFontFromFileTTF(file.path().string().c_str(), currFontSize);
+            }
+        }
+    }
+    io.FontDefault = GetFont(currFont);
+    ImGui_ImplOpenGL3_DestroyFontsTexture();
+    ImGui_ImplOpenGL3_CreateFontsTexture();
+    needsFontScanned = false;
+    scannedOnce = true;
+}
+
 float JWindow::DeltaTime() const
 {
     return (float)deltaTime;
@@ -273,6 +327,32 @@ unsigned int JWindow::GetFPS() const
 float JWindow::GetActualFPS() const
 {
     return fps;
+}
+
+ImFont* JWindow::GetFont(const std::string& name)
+{
+    auto found = fonts.find(name);
+    if (found == fonts.end()) return fonts["Default"];
+    else return found->second;
+}
+
+std::string& JWindow::GetFontByInd(int ind)
+{
+    static std::string EMPTY = "";
+    if (ind < 0 || ind >= (int)fontKeys.size()) return EMPTY;
+    else return fontKeys[ind];
+}
+
+int JWindow::GetIndByFont(const std::string& name)
+{
+    auto found = revFonts.find(name);
+    if (found == revFonts.end()) return 0;
+    else return found->second;
+}
+
+int JWindow::GetFontCount() const
+{
+    return (int)fontKeys.size();
 }
 
 JWindow::~JWindow()

@@ -8,7 +8,8 @@
 
 EEditor::EEditor(JWindow& window) :
 window(window),
-styleEditor(settings),
+settings(window),
+styleEditor(window, settings),
 shdTest(JResPath("shd/test.vert"), JResPath("shd/test.frag"), {}, 0),
 renderBatch(1, JRenderBatchMode::Quads),
 tex(JResPath("tex/icon.png"))
