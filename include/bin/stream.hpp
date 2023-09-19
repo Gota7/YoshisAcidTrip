@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <optional>
+#include <tuple>
 #include <vector>
 
 // Either assigns the declaration an optional value or returns false.

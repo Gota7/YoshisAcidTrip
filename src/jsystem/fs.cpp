@@ -49,7 +49,7 @@ std::string JFileSystem::PathSeparators(const std::string& path)
 {
     ZoneScopedN("JFileSystem::PathSeparators");
     std::string ret = path;
-    for (int i = 0; i < ret.size(); i++)
+    for (std::size_t i = 0; i < ret.size(); i++)
     {
         if (ret.at(i) == '/') ret.at(i) = '\\';
     }

@@ -107,6 +107,7 @@ void EEditor::DrawPopups()
 void EEditor::DrawUI()
 {
     ZoneScopedN("EEditor::DrawUI");
+    // ImGui::ShowDemoWindow();
     DrawMainBar();
     DrawPopups();
     styleEditor.DrawUI();
