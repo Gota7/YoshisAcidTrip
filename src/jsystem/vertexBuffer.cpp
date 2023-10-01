@@ -79,7 +79,7 @@ void JVertexBuffer::Map(void*& vertexPtr, void*& indexPtr)
     mapped = true;
 }
 
-void JVertexBuffer::Unmap()
+void JVertexBuffer::Unmap() // TODO: ONLY UPLOAD WHAT WE NEED, NOT ALL!
 {
     ZoneScopedN("JVertexBuffer::Unmap");
     if (!mapped) return;

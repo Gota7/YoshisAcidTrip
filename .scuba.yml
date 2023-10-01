@@ -1,0 +1,5 @@
+image: gota7/yoshisacidtrip:latest
+aliases:
+  clean: scripts/clean.sh
+  linux: scripts/build.sh -DBACKEND=GL -DOS=Linux -DSTATIC_BUILD=ON 
+  windows: scripts/build.sh -DBACKEND=GL -DOS=Windows -DSTATIC_BUILD=ON -DCMAKE_TOOLCHAIN_FILE=toolchains/windows.cmake

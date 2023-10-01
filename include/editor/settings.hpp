@@ -13,7 +13,7 @@ class ESettings
 {
 public:
     const ImVec4 VERSION = ImVec4(0.0f, 0.0f, 1.0f, 0.0f);
-    std::string currTheme = "Cat & Frog";
+    std::string currTheme = "Wonder";
     JPtr<EStyle> currStyle;
 
     // Make new settings.

@@ -4,4 +4,3 @@ cd build
 cmake .. $@
 cmake --build . -j`nproc`
 cd ..
-bin/LSD
