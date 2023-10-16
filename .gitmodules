@@ -11,3 +11,6 @@
 [submodule "subs/imgui"]
 	path = subs/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "subs/yaml-cpp"]
+	path = subs/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp

@@ -4,6 +4,7 @@ build/
 res/tests/
 res/BUILDTIME
 res/NSMBUDX
+res/romfs/
 ./run
 ./clean
 !src/bin

@@ -1,9 +1,10 @@
-#include <editor/editor.hpp>
+#include "editor.hpp"
 
-#include <bin/formats/sarc.hpp>
-#include <bin/formats/yaz0.hpp>
-#include <bin/streams/file.hpp>
-#include <bin/streams/memory.hpp>
+#include "../bin/formats/byml.hpp"
+#include "../bin/formats/sarc.hpp"
+#include "../bin/formats/yaz0.hpp"
+#include "../bin/streams/file.hpp"
+#include "../bin/streams/memory.hpp"
 #include <imgui.h>
 
 EEditor::EEditor(JWindow& window) :
@@ -33,6 +34,11 @@ tex(JResPath("tex/icon.png"))
     // uniforms.Connect(shdTest);
     // JVertexUV::SetShaderAttributes(shdTest);
     // shdTest.SetInt("tex", 0);
+
+    // Test.
+    BStreamFile src(JResPath("tests/ActorInfo.Product.100.rstbl.byml"), BStreamMode::Read);
+    BYML byml(src);
+    byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
 
 }
 

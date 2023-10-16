@@ -80,6 +80,8 @@ if (${STATIC_BUILD})
     option(BUILD_SHARED_LIBS "" OFF)
     add_subdirectory(subs/glfw)
     include_directories(subs/glfw/include)
+	add_subdirectory(subs/yaml-cpp)
+    include_directories(subs/glfw/yaml-cpp/include)
 endif()
 
 # Add tracy if needed.
@@ -89,6 +91,7 @@ endif()
 
 # Base libs.
 set(LIBS "imgui")
+set(LIBS "${LIBS} yaml-cpp")
 
 # Debug.
 if (NOT ${DEBUG})
