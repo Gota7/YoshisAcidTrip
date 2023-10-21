@@ -14,3 +14,6 @@
 [submodule "subs/yaml-cpp"]
 	path = subs/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "subs/zstd"]
+	path = subs/zstd
+	url = https://github.com/facebook/zstd

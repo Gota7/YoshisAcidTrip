@@ -2,7 +2,7 @@
 
 #include "../bin/formats/byml.hpp"
 #include "../bin/formats/sarc.hpp"
-#include "../bin/formats/yaz0.hpp"
+#include "../bin/formats/zstd.hpp"
 #include "../bin/streams/file.hpp"
 #include "../bin/streams/memory.hpp"
 #include <imgui.h>
@@ -17,28 +17,22 @@ tex(JResPath("tex/icon.png"))
 {
     ZoneScopedN("EEditor::EEditor");
 
-    // Test.
-    // BStreamFile sarcS(JResPath("tests/Pa1_1-1_1.sarc"), BStreamMode::Read);
-    // SARC sarc(sarcS);
-    // BStreamFile layoutS(JResPath("tests/Pa1_1-1_1.bin"), BStreamMode::Write);
-    // BStreamFile objectsS(JResPath("tests/Pa1_1-1_1_hd.bin"), BStreamMode::Write);
-    // BStreamFile colS(JResPath("tests/d_bgchk_Pa1_1-1_1.bin"), BStreamMode::Write);
-    // auto& layout = sarc.Open("BG_unt/Pa1_1-1_1.bin", BStreamMode::Read);
-    // auto& objects = sarc.Open("BG_unt/Pa1_1-1_1_hd.bin", BStreamMode::Read);
-    // auto& col = sarc.Open("BG_chk/d_bgchk_Pa1_1-1_1.bin", BStreamMode::Read);
-    // layoutS.Copy(layout, layout.Size());
-    // objectsS.Copy(objects, objects.Size());
-    // colS.Copy(col, col.Size());
-
-    // // Shaders.
+    // Shaders.
     // uniforms.Connect(shdTest);
     // JVertexUV::SetShaderAttributes(shdTest);
     // shdTest.SetInt("tex", 0);
 
     // Test.
-    BStreamFile src(JResPath("tests/ActorInfo.Product.100.rstbl.byml"), BStreamMode::Read);
-    BYML byml(src);
-    byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
+    // BStreamFile src(JResPath("tests/ActorInfo.Product.100.rstbl.byml"), BStreamMode::Read);
+    // BYML byml(src);
+    // byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
+
+    // Compression.
+    // BStreamFile src(JResPath("tests/Default.Nin_NX_NVN.genvb.zs"), BStreamMode::Read);
+    // BStreamFile dst(JResPath("tests/Default.Nin_NX_NVN.genvb"), BStreamMode::Write);
+    // ZSTD::Decompress(src, dst, src.Size());
+    // BYML byml(src);
+    // byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
 
 }
 

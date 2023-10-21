@@ -18,5 +18,5 @@ void BYMLNodeDataString::Write(BStream& dst)
 void BYMLNodeDataString::EmitYAML(YAML::Emitter& node)
 {
     ZoneScopedN("BYMLNodeDataString::EmitYAML");
-    node << val;
+    node << YAML::LocalTag("str") << val;
 }

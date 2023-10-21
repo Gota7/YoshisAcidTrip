@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.10)
 project(LSD)
 include_directories(include)
 
@@ -78,10 +78,22 @@ include_directories(subs/imgui)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 if (${STATIC_BUILD})
     option(BUILD_SHARED_LIBS "" OFF)
+	option(YAML_CPP_BUILD_TOOLS "" OFF)
+	option(ZSTD_BUILD_PROGRAMS "" OFF)
+	option(ZSTD_BUILD_STATIC "" ON)
+	option(ZSTD_BUILD_SHARED "" OFF)
+	set(BUILD_TESTING OFF)
     add_subdirectory(subs/glfw)
     include_directories(subs/glfw/include)
 	add_subdirectory(subs/yaml-cpp)
     include_directories(subs/glfw/yaml-cpp/include)
+	add_subdirectory(subs/zstd/build/cmake)
+	include_directories(subs/zstd/lib)
+	set(LIB_ZSTD libzstd_static)
+else()
+	find_path(ZSTD_INCLUDE_DIR NAMES zstd.h)
+	find_library(ZSTD_LIBRARY_RELEASE NAMES zstd zstd_static)
+	set(LIB_ZSTD ${ZSTD_LIBRARY_RELEASE})
 endif()
 
 # Add tracy if needed.
@@ -92,6 +104,7 @@ endif()
 # Base libs.
 set(LIBS "imgui")
 set(LIBS "${LIBS} yaml-cpp")
+set(LIBS "${LIBS} ${LIB_ZSTD}")
 
 # Debug.
 if (NOT ${DEBUG})

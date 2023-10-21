@@ -15,5 +15,5 @@ void BYMLNodeDataBool::Write(BStream& dst)
 void BYMLNodeDataBool::EmitYAML(YAML::Emitter& node)
 {
     ZoneScopedN("BYMLNodeDataBool::EmitYAML");
-    node << val;
+    node << YAML::LocalTag("bool") << val;
 }

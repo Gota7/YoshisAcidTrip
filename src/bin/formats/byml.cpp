@@ -52,7 +52,6 @@ void BYMLNode::ReadData(BStream& src, BYMLType type, const BYMLNodeReadCtx& ctx)
         {
             DBG_PRINT("BYML@LSD: Unhandled node type 0x" << std::hex << (int)type << " found at 0x" << std::hex << src.Tell() << ".");
             abort();
-            return;
         }
     }
     data->Read(src, ctx);

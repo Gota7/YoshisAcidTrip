@@ -12,4 +12,4 @@ namespace Yaz0
     // Compress a file of a given size from the source to the destination.
     bool Compress(BStream& src, BStream& dst, std::size_t fileSize, unsigned int dataAlignment = 0, unsigned char level = 7);
 
-};
+}

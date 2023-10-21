@@ -7,6 +7,7 @@ res/NSMBUDX
 res/romfs/
 ./run
 ./clean
+buildStatic
 !src/bin
 !include/bin
 run

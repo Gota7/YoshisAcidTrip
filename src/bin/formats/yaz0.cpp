@@ -1,7 +1,7 @@
-#include <bin/formats/yaz0.hpp>
+#include "yaz0.hpp"
 
-#include <bin/types.hpp>
-#include <common.hpp>
+#include "../../common.hpp"
+#include "../types.hpp"
 
 bool Yaz0::Decompress(BStream& src, BStream& dst, std::optional<std::size_t> maxSize)
 {
