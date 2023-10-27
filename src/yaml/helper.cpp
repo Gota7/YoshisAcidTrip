@@ -1,4 +1,4 @@
-#include "helper.h"
+#include "helper.hpp"
 
 YAML::Node YAML::convert<glm::mat3>::encode(const glm::mat3& rhs)
 {

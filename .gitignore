@@ -5,6 +5,7 @@ res/tests/
 res/BUILDTIME
 res/NSMBUDX
 res/romfs/
+res/romfs_simple/
 ./run
 ./clean
 buildStatic

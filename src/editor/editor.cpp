@@ -5,6 +5,7 @@
 #include "../bin/formats/zstd.hpp"
 #include "../bin/streams/file.hpp"
 #include "../bin/streams/memory.hpp"
+#include "../fs/convert.hpp"
 #include <imgui.h>
 
 EEditor::EEditor(JWindow& window) :
@@ -33,6 +34,9 @@ tex(JResPath("tex/icon.png"))
     // ZSTD::Decompress(src, dst, src.Size());
     // BYML byml(src);
     // byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
+    // auto romfs = *FConvert::MakeEditorRomfs(JResPath("romfs"), JResPath("tests/TestMod/Base"), JResPath("tests/TestMod/Patch"));
+    // FRomfs romfs(JResPath("tests/TestMod/Base"), JResPath("tests/TestMod/Patch"));
+    // FConvert::UpdateRomfs(romfs);
 
 }
 
