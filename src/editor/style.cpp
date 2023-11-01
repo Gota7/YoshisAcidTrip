@@ -1,7 +1,7 @@
 #include <editor/style.hpp>
 
-#include <editor/inicpp.hpp>
-#include <jsystem/window.hpp>
+#include "../jsystem/window.hpp"
+#include "inicpp.hpp"
 #include <iostream>
 
 const JResPath STYLE_DEFAULT = JResPath("default");
@@ -79,6 +79,12 @@ EStyle::EStyle(const JResPath& path)
     style.WindowRounding = t["Theme"]["WindowRounding"].as<float>();
     style.WindowTitleAlign.x = t["Theme"]["WindowTitleAlignX"].as<float>();
     style.WindowTitleAlign.y = t["Theme"]["WindowTitleAlignY"].as<float>();
+}
+
+float EStyle::FontSize() const
+{
+    ZoneScopedN("EStyle::FontSize");
+    return fontSize;
 }
 
 void EStyle::Save(const JResPath& path)

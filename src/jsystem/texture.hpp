@@ -68,6 +68,15 @@ public:
     // Apply texture animation data.
     void ApplyTexAnim(JShader& shader, const std::string& animMtxName);
 
+    // Get width.
+    int Width() const;
+
+    // Get height.
+    int Height() const;
+
+    // Get the ID.
+    GLuint GetID() const;
+
     // Deconstruct a texture.
     ~JTexture();
 

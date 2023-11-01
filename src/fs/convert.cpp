@@ -171,20 +171,20 @@ void FConvertStepBYML(FRomfs& romfs, FConversionFileStep& step)
         DBG_PRINT("CONVERT@LSD: Deserializing \"" << romfs.BasePath(filePath).fullPath << "\".");
         BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
         BYML byml(src);
-        int numFiles = byml.WriteYAML(romfs.BasePath(filePathNoExt + ".yaml"));
+        int numFiles = byml.WriteYAML(romfs.BasePath(filePathNoExt + ".gyml"));
         std::vector<FConversionFileInputMode> modes = { FConversionFileInputMode::String };
-        std::vector<FConversionFileInput> inputs = { filePathNoExt + ".yaml" };
+        std::vector<FConversionFileInput> inputs = { filePathNoExt + ".gyml" };
         for (int i = 0; i < numFiles; i++)
         {
             modes.emplace_back(FConversionFileInputMode::String);
-            inputs.emplace_back(filePathNoExt + ".yaml." + std::to_string(i));
+            inputs.emplace_back(filePathNoExt + ".gyml." + std::to_string(i));
         }
         std::filesystem::remove(romfs.BasePath(filePath).fullPath);
         if (romfs.FileExistsInPatchPath(filePath))
         {
             BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
             BYML byml(src);
-            byml.WriteYAML(romfs.PatchPath(filePathNoExt + ".yaml")); // Minor bug here with no files being used from path and instead base but come on when will this happen.
+            byml.WriteYAML(romfs.PatchPath(filePathNoExt + ".gyml")); // Minor bug here with no files being used from path and instead base but come on when will this happen.
             std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
         }
         return std::make_pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>(std::move(modes), std::move(inputs));

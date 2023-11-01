@@ -6,12 +6,13 @@
 #include "../bin/streams/file.hpp"
 #include "../bin/streams/memory.hpp"
 #include "../fs/convert.hpp"
+#include <format>
 #include <imgui.h>
 
 EEditor::EEditor(JWindow& window) :
 window(window),
 settings(window),
-styleEditor(window, settings),
+styleEditor(*this, settings),
 shdTest(JResPath("shd/test.vert"), JResPath("shd/test.frag"), {}, 0),
 renderBatch(1, JRenderBatchMode::Quads),
 tex(JResPath("tex/icon.png"))
@@ -38,6 +39,44 @@ tex(JResPath("tex/icon.png"))
     // FRomfs romfs(JResPath("tests/TestMod/Base"), JResPath("tests/TestMod/Patch"));
     // FConvert::UpdateRomfs(romfs, true);
 
+    // Talking flowers!
+    unsigned int imageInd = 0;
+    while (true)
+    {
+        JResPath path = JResPath("tex/flower/" + std::format("{:02}.png", imageInd++));
+        if (JFileSystem::FileExists(path))
+        {
+            talkingFlowerFrames.emplace_back(JPtrMake(JTexture, path));
+        }
+        else break;
+    }
+    if (talkingFlowerFrames.size() == 0)
+    {
+        DBG_PRINT("BLABBER@LSD: Unable to load Billiam's files in \"res/tex/flower\". You can silence him but you can't silence the truth.");
+        abort();
+    }
+
+    // Load settings.
+    settings.Load(window);
+    auto mod = settings.mods.find(settings.currMod);
+    if (mod == settings.mods.end()) // TODO: TEST TO MAKE SURE MOD IS VALID!
+    {
+        welcomeWindow = JPtrMake(EWelcome, *this);
+    }
+
+}
+
+std::size_t EEditor::NumTalkingFlowerFrames() const
+{
+    ZoneScopedN("EEditor::NumTalkingFlowerFrames");
+    return talkingFlowerFrames.size();
+}
+
+JTexture& EEditor::TalkingFlowerFrame(std::size_t ind)
+{
+    ZoneScopedN("EEditor::TalkingFlowerFrame");
+    if (ind >= talkingFlowerFrames.size()) ind = 0;
+    return *talkingFlowerFrames[ind];
 }
 
 void EEditor::Update()
@@ -85,14 +124,16 @@ void EEditor::DrawAboutPopup()
             ImVec4(.4, 1, 0, 1),
             (
                 "Yoshi's Acid Trip - Version " +
-                std::to_string((unsigned int)settings.VERSION.y) +
-                "." + std::to_string((unsigned int)settings.VERSION.z) +
-                "." + std::to_string((unsigned int)settings.VERSION.w)
+                std::to_string(settings.VERSION[VER_INDEX_MAJOR]) +
+                "." + std::to_string(settings.VERSION[VER_INDEX_MAJOR]) +
+                "." + std::to_string(settings.VERSION[VER_INDEX_REV])
             ).c_str()
         );
         ImGui::TextColored(ImVec4(1, .1, .5, 1), "\tAn editor for Super Mario Bros. Wonder.");
         ImGui::Separator();
         ImGui::TextColored(ImVec4(1, 0, 1, 1), "Gota7 - Everything.");
+        ImGui::TextColored(ImVec4(1, 0.6f, 0, 1), "Payanica - Ideas, resources, testing.");
+        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Ndymario - Mac support and testing.");
         ImGui::Separator();
         if (ImGui::Button("Ok"))
         {
@@ -106,6 +147,8 @@ void EEditor::DrawPopups()
 {
     ZoneScopedN("EEditor::DrawPopups");
     DrawAboutPopup();
+    if (welcomeWindow && !welcomeWindow->Popped()) welcomeWindow->Popup();
+    if (welcomeWindow) welcomeWindow->DrawUI();
 }
 
 void EEditor::DrawUI()
@@ -114,7 +157,6 @@ void EEditor::DrawUI()
     // ImGui::ShowDemoWindow();
     DrawMainBar();
     DrawPopups();
-    styleEditor.DrawUI();
 }
 
 void EEditor::Render()

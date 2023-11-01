@@ -143,6 +143,24 @@ void JTexture::ApplyTexAnim(JShader& shader, const std::string& animMtxName)
     shader.SetMat4(animMtxName.c_str(), anim ? glm::mat4(anim->GetMtx()) : glm::mat4(1.0f));
 }
 
+int JTexture::Width() const
+{
+    ZoneScopedN("JTexture::Width");
+    return width;
+}
+
+int JTexture::Height() const
+{
+    ZoneScopedN("JTexture::Height");
+    return height;
+}
+
+GLuint JTexture::GetID() const
+{
+    ZoneScopedN("JTexture::GetID");
+    return texture;
+}
+
 JTexture::~JTexture()
 {
     ZoneScopedN("JTexture::~JTexture");

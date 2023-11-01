@@ -8,6 +8,8 @@
 #include "level.hpp"
 #include "settings.hpp"
 #include "styleEditor.hpp"
+#include "utils.h"
+#include "welcome.hpp"
 
 // Forward declare.
 class JWindow;
@@ -15,16 +17,21 @@ class JWindow;
 // Main editor interface.
 class EEditor
 {
+public:
     JWindow& window;
     JPtr<ELevel> level;
     ESettings settings;
     EStyleEditor styleEditor;
+    JPtr<EWelcome> welcomeWindow;
+    std::vector<JPtr<JTexture>> talkingFlowerFrames;
 
     // Debug stuff, delete later!
     JUniformBuffer uniforms;
     JShader shdTest;
     JRenderBatch<JVertexUV> renderBatch;
     JTexture tex;
+
+private:
 
     // Draw the main bar.
     void DrawMainBar();
@@ -39,6 +46,12 @@ public:
 
     // Make a new editor.
     EEditor(JWindow& window);
+
+    // Get number of talking flower frames.
+    std::size_t NumTalkingFlowerFrames() const;
+
+    // Get talking flower frame.
+    JTexture& TalkingFlowerFrame(std::size_t ind);
 
     // Update the editor.
     void Update();

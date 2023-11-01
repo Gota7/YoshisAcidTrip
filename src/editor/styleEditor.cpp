@@ -8,7 +8,7 @@
 
 const JResPath THEME_FOLDER = JResPath("thm");
 
-EStyleEditor::EStyleEditor(JWindow& window, ESettings& settings) : window(window), settings(settings)
+EStyleEditor::EStyleEditor(EEditor& editor, ESettings& settings) : editor(editor), settings(settings)
 {
     ZoneScopedN("EStyleEditor::EStyleEditor");
     Scan();
@@ -85,7 +85,7 @@ void EStyleEditor::DrawUI()
         if (ImGui::Combo("Current Style", &currTheme, GetTheme, this, (int)themes.size()))
         {
             settings.currStyle = JPtrMake(EStyle, ThemePath(themes[currTheme]));
-            settings.currStyle->Set(window);
+            settings.currStyle->Set(editor.window);
             settings.currTheme = themes[currTheme];
             settings.Save();
         }
@@ -111,7 +111,7 @@ void EStyleEditor::DrawUI()
             {
                 std::filesystem::remove(ThemePath(themes[currTheme]).fullPath);
                 settings.currStyle = JPtrMake(EStyle, ThemePath(themes[0]));
-                settings.currStyle->Set(window);
+                settings.currStyle->Set(editor.window);
                 settings.currTheme = themes[0];
                 settings.Save();
                 needsScan = true;
@@ -129,17 +129,17 @@ void EStyleEditor::DrawUI()
             style = settings.currStyle->style;
 
         ImGui::Separator();
-        int currFontInd = window.GetIndByFont(settings.currStyle->font);
-        if (ImGui::Combo("Font", &currFontInd, GetFont, &window, window.GetFontCount()))
+        int currFontInd = editor.window.GetIndByFont(settings.currStyle->font);
+        if (ImGui::Combo("Font", &currFontInd, GetFont, &editor.window, editor.window.GetFontCount()))
         {
-            window.currFont = settings.currStyle->font = window.GetFontByInd(currFontInd);
+            editor.window.currFont = settings.currStyle->font = editor.window.GetFontByInd(currFontInd);
         }
         if (settings.currStyle->font != "Default" && ImGui::DragFloat("Font Size", &settings.currStyle->fontSize, 0.1f, 1.0f, 200.0f))
         {
-            window.currFontSize = settings.currStyle->fontSize;
+            editor.window.currFontSize = settings.currStyle->fontSize;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Scan Fonts")) window.needsFontScanned = true;
+        if (ImGui::Button("Scan Fonts")) editor.window.needsFontScanned = true;
 
         if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
         {
@@ -177,11 +177,11 @@ void EStyleEditor::DrawUI()
                     style.WindowMenuButtonPosition = window_menu_button_position - 1;
                 ImGui::Combo("ColorButtonPosition", (int*)&style.ColorButtonPosition, "Left\0Right\0");
                 ImGui::SliderFloat2("ButtonTextAlign", (float*)&style.ButtonTextAlign, 0.0f, 1.0f, "%.2f");
-                ImGui::SameLine(); EUtils::Tooltip("Alignment applies when a button is larger than its text content.");
+                ImGui::SameLine(); EUtils::Tooltip(editor, "Alignment applies when a button is larger than its text content.");
                 ImGui::SliderFloat2("SelectableTextAlign", (float*)&style.SelectableTextAlign, 0.0f, 1.0f, "%.2f");
-                ImGui::SameLine(); EUtils::Tooltip("Alignment applies when a selectable is larger than its text content.");
+                ImGui::SameLine(); EUtils::Tooltip(editor, "Alignment applies when a selectable is larger than its text content.");
                 ImGui::Text("Safe Area Padding");
-                ImGui::SameLine(); EUtils::Tooltip("Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).");
+                ImGui::SameLine(); EUtils::Tooltip(editor, "Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).");
                 ImGui::SliderFloat2("DisplaySafeAreaPadding", (float*)&style.DisplaySafeAreaPadding, 0.0f, 30.0f, "%.0f");
                 ImGui::EndTabItem();
             }
@@ -197,6 +197,7 @@ void EStyleEditor::DrawUI()
                 if (ImGui::RadioButton("Alpha",  alpha_flags == ImGuiColorEditFlags_AlphaPreview))     { alpha_flags = ImGuiColorEditFlags_AlphaPreview; } ImGui::SameLine();
                 if (ImGui::RadioButton("Both",   alpha_flags == ImGuiColorEditFlags_AlphaPreviewHalf)) { alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf; } ImGui::SameLine();
                 EUtils::Tooltip(
+                    editor,
                     "In the color list:\n"
                     "Left-click on color square to open color picker,\n"
                     "Right-click to open edit options menu.");
@@ -232,11 +233,11 @@ void EStyleEditor::DrawUI()
             {
                 ImGui::Checkbox("Anti-aliased lines", &style.AntiAliasedLines);
                 ImGui::SameLine();
-                EUtils::Tooltip("When disabling anti-aliasing lines, you'll probably want to disable borders in your style as well.");
+                EUtils::Tooltip(editor, "When disabling anti-aliasing lines, you'll probably want to disable borders in your style as well.");
 
                 ImGui::Checkbox("Anti-aliased lines use texture", &style.AntiAliasedLinesUseTex);
                 ImGui::SameLine();
-                EUtils::Tooltip("Faster lines using texture data. Require backend to render with bilinear filtering (not point/nearest filtering).");
+                EUtils::Tooltip(editor, "Faster lines using texture data. Require backend to render with bilinear filtering (not point/nearest filtering).");
 
                 ImGui::Checkbox("Anti-aliased fill", &style.AntiAliasedFill);
 
