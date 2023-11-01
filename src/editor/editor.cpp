@@ -29,14 +29,14 @@ tex(JResPath("tex/icon.png"))
     // byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
 
     // Compression.
-    // BStreamFile src(JResPath("tests/Default.Nin_NX_NVN.genvb.zs"), BStreamMode::Read);
+    // BStreamFile src(JResPath("tests/TestMod/Base/Effect/TimelineEventEffectKoopaTransform.Nin_NX_NVN.esetb.byml"), BStreamMode::Read);
     // BStreamFile dst(JResPath("tests/Default.Nin_NX_NVN.genvb"), BStreamMode::Write);
     // ZSTD::Decompress(src, dst, src.Size());
     // BYML byml(src);
-    // byml.WriteYAML(JResPath("tests/ActorInfo.Product.100.rstbl.yaml"));
+    // DBG_PRINT(byml.WriteYAML(JResPath("tests/TestMod/Base/Effect/TimelineEventEffectKoopaTransform.Nin_NX_NVN.esetb.yaml")));
     // auto romfs = *FConvert::MakeEditorRomfs(JResPath("romfs"), JResPath("tests/TestMod/Base"), JResPath("tests/TestMod/Patch"));
     // FRomfs romfs(JResPath("tests/TestMod/Base"), JResPath("tests/TestMod/Patch"));
-    // FConvert::UpdateRomfs(romfs);
+    // FConvert::UpdateRomfs(romfs, true);
 
 }
 

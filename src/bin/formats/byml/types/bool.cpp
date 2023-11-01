@@ -12,8 +12,8 @@ void BYMLNodeDataBool::Write(BStream& dst)
     dst.Write((u32)val);
 }
 
-void BYMLNodeDataBool::EmitYAML(YAML::Emitter& node)
+void BYMLNodeDataBool::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
     ZoneScopedN("BYMLNodeDataBool::EmitYAML");
-    node << YAML::LocalTag("bool") << val;
+    node << val;
 }

@@ -1,16 +1,17 @@
-#include "stringHash.hpp"
+#include "hash.hpp"
 
-#include "stringTable.hpp"
-
-void BYMLNodeDataStringHash::Read(BStream& src, const BYMLNodeReadCtx& ctx)
+void BYMLNodeDataHash::Read(BStream& src, const BYMLNodeReadCtx& ctx)
 {
-    ZoneScopedN("BYMLNodeDataStringHash::Read");
+    ZoneScopedN("BYMLNodeDataHash::Read");
     u24 size = *src.ReadU24();
-    for (u32 i = 0; i < size.Get(); i++)
+    std::streampos typesPos = src.Tell() + std::streamoff(8 * size.Get());
+    for (u32 i = 0; i < size.Get(); i++) // TODO!!!
     {
-        std::string key = ctx.hashTable->strs[src.ReadU24()->Get()];
-        BYMLType type((BYMLType)*src.Read<u8>());
+        uint32_t key = *src.Read<u32>();
         std::streampos bak = src.Tell();
+        src.Seek(typesPos + std::streamoff(i));
+        BYMLType type((BYMLType)*src.Read<u8>());
+        src.Seek(bak);
         auto& node = map.emplace(key, BYMLNode()).first->second;
         if (BYMLNode::IsValue(type))
         {
@@ -20,7 +21,6 @@ void BYMLNodeDataStringHash::Read(BStream& src, const BYMLNodeReadCtx& ctx)
         {
             std::streampos absOff = ctx.filePos + std::streamoff(*src.Read<u32>());
             src.Seek(absOff);
-            // node.type = (BYMLType)*src.Read<u8>(); // Idk.
             node.type = BYMLNode::IsSpecial(type) ? type : ((BYMLType)*src.Read<u8>());
             node.ReadData(src, type, BYMLNodeReadCtx(src.Tell(), ctx.filePos, ctx.hashTable, ctx.stringTable));
         }
@@ -28,16 +28,16 @@ void BYMLNodeDataStringHash::Read(BStream& src, const BYMLNodeReadCtx& ctx)
     }
 }
 
-void BYMLNodeDataStringHash::Write(BStream& dst)
+void BYMLNodeDataHash::Write(BStream& dst)
 {
-    ZoneScopedN("BYMLNodeDataStringHash::Write");
+    ZoneScopedN("BYMLNodeDataHash::Write");
     // TODO!!!
     abort();
 }
 
-void BYMLNodeDataStringHash::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
+void BYMLNodeDataHash::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
-    ZoneScopedN("BYMLNodeDataStringHash::EmitYAML");
+    ZoneScopedN("BYMLNodeDataHash::EmitYAML");
     node << YAML::BeginMap;
     for (auto& item : map)
     {

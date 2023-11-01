@@ -22,7 +22,7 @@ void BYMLNodeDataStringTable::Write(BStream& dst)
     abort();
 }
 
-void BYMLNodeDataStringTable::EmitYAML(YAML::Emitter& node)
+void BYMLNodeDataStringTable::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
     ZoneScopedN("BYMLNodeDataStringTable::EmitYAML");
     // TODO!!!

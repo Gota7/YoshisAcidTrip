@@ -1,21 +1,37 @@
 #include "byml.hpp"
 
-BYMLNode::BYMLNode(BStream& src, const BYMLNodeReadCtx& ctx)
+BYMLNode::BYMLNode(BStream& src, const BYMLNodeReadCtx& ctx, BYMLType specialTypeDontRead)
 {
     ZoneScopedN("BYMLNode::BYMLNode");
     std::streampos basePos = src.Tell();
-    u8 type = *src.Read<u8>();
+    u8 type = (specialTypeDontRead != BYML_TYPE_INVALID) ? (u8)specialTypeDontRead : (*src.Read<u8>());
     ReadData(src, (BYMLType)type, BYMLNodeReadCtx(basePos, ctx.filePos, ctx.hashTable, ctx.stringTable));
 }
 
 void BYMLNode::ReadData(BStream& src, BYMLType type, const BYMLNodeReadCtx& ctx)
 {
     ZoneScopedN("BYMLNode::ReadData");
+    // DBG_PRINT((int)type << " " << std::hex << src.Tell());
     switch (type)
     {
+        case BYML_TYPE_HASH:
+        {
+            data = JPtrMake(BYMLNodeDataHash);
+            break;
+        }
         case BYML_TYPE_STRING:
         {
             data = JPtrMake(BYMLNodeDataString);
+            break;
+        }
+        case BYML_TYPE_BIN:
+        {
+            data = JPtrMake(BYMLNodeDataBin);
+            break;
+        }
+        case BYML_TYPE_FILE:
+        {
+            data = JPtrMake(BYMLNodeDataFile);
             break;
         }
         case BYML_TYPE_ARRAY:
@@ -46,6 +62,26 @@ void BYMLNode::ReadData(BStream& src, BYMLType type, const BYMLNodeReadCtx& ctx)
         case BYML_TYPE_FLOAT:
         {
             data = JPtrMake(BYMLNodeDataFloat);
+            break;
+        }
+        case BYML_TYPE_UINT:
+        {
+            data = JPtrMake(BYMLNodeDataUint);
+            break;
+        }
+        case BYML_TYPE_INT64:
+        {
+            data = JPtrMake(BYMLNodeDataInt64);
+            break;
+        }
+        case BYML_TYPE_UINT64:
+        {
+            data = JPtrMake(BYMLNodeDataUint64);
+            break;
+        }
+        case BYML_TYPE_DOUBLE:
+        {
+            data = JPtrMake(BYMLNodeDataDouble);
             break;
         }
         default:
@@ -102,22 +138,24 @@ BYML::BYML(BStream& src)
     if (stringTableOff != baseOff)
     {
         src.Seek(stringTableOff);
-        stringTable = JPtrMake(BYMLNode, src, BYMLNodeReadCtx(baseOff, baseOff, (BYMLNodeDataStringTable*)hashKeyTable->data.get(), nullptr));
+        stringTable = JPtrMake(BYMLNode, src, BYMLNodeReadCtx(baseOff, baseOff, hashKeyTable ? (BYMLNodeDataStringTable*)hashKeyTable->data.get() : nullptr, nullptr));
     }
     if (rootNodeOff != baseOff)
     {
         src.Seek(rootNodeOff);
-        rootNode = JPtrMake(BYMLNode, src, BYMLNodeReadCtx(baseOff, baseOff, (BYMLNodeDataStringTable*)hashKeyTable->data.get(), (BYMLNodeDataStringTable*)stringTable->data.get()));
+        rootNode = JPtrMake(BYMLNode, src, BYMLNodeReadCtx(baseOff, baseOff, hashKeyTable ? (BYMLNodeDataStringTable*)hashKeyTable->data.get() : nullptr, stringTable ? (BYMLNodeDataStringTable*)stringTable->data.get() : nullptr));
     }
 
 }
 
-void BYML::WriteYAML(const JResPath& path)
+int BYML::WriteYAML(const JResPath& path)
 {
     ZoneScopedN("BYML::WriteYAML");
     std::ofstream file = std::ofstream(path.fullPath);
     file.clear();
+    int fileInd = 0;
     YAML::Emitter root(file);
-    if (rootNode) rootNode->data->EmitYAML(root);
+    if (rootNode) rootNode->data->EmitYAML(root, path, fileInd);
     file.close();
+    return fileInd;
 }

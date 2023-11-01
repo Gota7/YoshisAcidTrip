@@ -1,5 +1,6 @@
 #include "convert.hpp"
 
+#include "../bin/formats/byml.hpp"
 #include "../bin/formats/sarc.hpp"
 #include "../bin/formats/zstd.hpp"
 #include "conversionFile.hpp"
@@ -124,7 +125,7 @@ void FConvertStepZStandard(FRomfs& romfs, FConversionFileStep& step)
 void FConvertStepSARC(FRomfs& romfs, FConversionFileStep& step)
 {
     ZoneScopedN("FConvertStepSARC");
-    FConvertItem(romfs, step, { ".sarc", ".blarc", ".pack", ".baatarc" }, "sarc", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
+    FConvertItem(romfs, step, { ".sarc", ".blarc", ".pack", ".baatarc", ".bkres", ".genvb", ".bfarc"}, "sarc", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
     {
         DBG_PRINT("CONVERT@LSD: Extracting \"" << romfs.BasePath(filePath).fullPath << "\".");
         BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
@@ -161,6 +162,35 @@ void FConvertStepSARC(FRomfs& romfs, FConversionFileStep& step)
     });
 }
 
+// Add BYML to step.
+void FConvertStepBYML(FRomfs& romfs, FConversionFileStep& step)
+{
+    ZoneScopedN("FConvertStepBYML");
+    FConvertItem(romfs, step, { ".byml", ".bgyml", ".byaml" }, "byml", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
+    {
+        DBG_PRINT("CONVERT@LSD: Deserializing \"" << romfs.BasePath(filePath).fullPath << "\".");
+        BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
+        BYML byml(src);
+        int numFiles = byml.WriteYAML(romfs.BasePath(filePathNoExt + ".yaml"));
+        std::vector<FConversionFileInputMode> modes = { FConversionFileInputMode::String };
+        std::vector<FConversionFileInput> inputs = { filePathNoExt + ".yaml" };
+        for (int i = 0; i < numFiles; i++)
+        {
+            modes.emplace_back(FConversionFileInputMode::String);
+            inputs.emplace_back(filePathNoExt + ".yaml." + std::to_string(i));
+        }
+        std::filesystem::remove(romfs.BasePath(filePath).fullPath);
+        if (romfs.FileExistsInPatchPath(filePath))
+        {
+            BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
+            BYML byml(src);
+            byml.WriteYAML(romfs.PatchPath(filePathNoExt + ".yaml")); // Minor bug here with no files being used from path and instead base but come on when will this happen.
+            std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
+        }
+        return std::make_pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>(std::move(modes), std::move(inputs));
+    });
+}
+
 // Version 1 - ZStandard (de)compression.
 void FConvertVersion1(FRomfs& romfs, FConversionFile& convFile)
 {
@@ -169,7 +199,7 @@ void FConvertVersion1(FRomfs& romfs, FConversionFile& convFile)
         FConvertStepZStandard(romfs, step);
 }
 
-// Version 2 - SARC extraction.
+// Version 2 - SARC extraction. TODO: HANDLE RECURSIVE FILES!!!
 void FConvertVersion2(FRomfs& romfs, FConversionFile& convFile)
 {
     ZoneScopedN("FConvertVersion2");
@@ -178,7 +208,15 @@ void FConvertVersion2(FRomfs& romfs, FConversionFile& convFile)
     FConvertVersion1(romfs, convFile); // Important to make sure ZStandard files in the SARC are decompressed too.
 }
 
-bool FConvert::UpdateRomfs(FRomfs& romfs)
+// Version 3 - Deserialize BYML.
+void FConvertVersion3(FRomfs& romfs, FConversionFile& convFile)
+{
+    ZoneScopedN("FConvertVersion3");
+    for (auto& step : convFile.steps)
+        FConvertStepBYML(romfs, step);
+}
+
+bool FConvert::UpdateRomfs(FRomfs& romfs, bool forceReFileChecks)
 {
     ZoneScopedN("FConvert::UpdateRomfs");
     FConversionFile convFile(romfs, false);
@@ -187,9 +225,10 @@ bool FConvert::UpdateRomfs(FRomfs& romfs)
         DBG_PRINT("ROMFS@LSD: Can not mix and match base and patch versions!");
         return false;
     }
-    if (convFile.version < 1) FConvertVersion1(romfs, convFile);
-    if (convFile.version < 2) FConvertVersion2(romfs, convFile);
-    convFile.version = 2;
+    if (forceReFileChecks || convFile.version < 1) FConvertVersion1(romfs, convFile);
+    if (forceReFileChecks || convFile.version < 2) FConvertVersion2(romfs, convFile);
+    if (forceReFileChecks || convFile.version < 3) FConvertVersion3(romfs, convFile);
+    convFile.version = 3;
     convFile.Save(romfs);
     return true;
 }

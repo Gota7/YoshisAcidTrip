@@ -3,7 +3,7 @@
 void BYMLNodeDataInt::Read(BStream& src, const BYMLNodeReadCtx& ctx)
 {
     ZoneScopedN("BYMLNodeDataInt::Read");
-    val = *src.Read<int>();
+    val = *src.Read<int32_t>();
 }
 
 void BYMLNodeDataInt::Write(BStream& dst)
@@ -12,8 +12,8 @@ void BYMLNodeDataInt::Write(BStream& dst)
     dst.Write(val);
 }
 
-void BYMLNodeDataInt::EmitYAML(YAML::Emitter& node)
+void BYMLNodeDataInt::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
     ZoneScopedN("BYMLNodeDataInt::EmitYAML");
-    node << YAML::LocalTag("i32") << val;
+    node << YAML::LocalTag("l") << val;
 }

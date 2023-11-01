@@ -10,7 +10,7 @@ namespace FConvert
     std::optional<FRomfs> MakeEditorRomfs(const JResPath& srcDir, const JResPath& baseDir, const JResPath& patchDir);
 
     // Update ROMFS to new version.
-    bool UpdateRomfs(FRomfs& romfs);
+    bool UpdateRomfs(FRomfs& romfs, bool forceReFileChecks = false);
 
     // Compile ROMFS.
     void CompileRomfs(const FRomfs& romfs, const JResPath& dstDir);

@@ -12,8 +12,8 @@ void BYMLNodeDataFloat::Write(BStream& dst)
     dst.Write(val);
 }
 
-void BYMLNodeDataFloat::EmitYAML(YAML::Emitter& node)
+void BYMLNodeDataFloat::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
     ZoneScopedN("BYMLNodeDataFloat::EmitYAML");
-    node << YAML::LocalTag("f32") << val;
+    node << YAML::LocalTag("f") << val;
 }

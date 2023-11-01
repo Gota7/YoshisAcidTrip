@@ -1,9 +1,16 @@
 #pragma once
 
 #include "byml/types/array.hpp"
+#include "byml/types/bin.hpp"
 #include "byml/types/bool.hpp"
+#include "byml/types/double.hpp"
+#include "byml/types/file.hpp"
 #include "byml/types/float.hpp"
+#include "byml/types/hash.hpp"
 #include "byml/types/int.hpp"
+#include "byml/types/int64.hpp"
+#include "byml/types/uint.hpp"
+#include "byml/types/uint64.hpp"
 #include "byml/types/string.hpp"
 #include "byml/types/stringHash.hpp"
 #include "byml/types/stringTable.hpp"
@@ -11,8 +18,8 @@
 // BYML file.
 class BYML
 {
-    JPtr<BYMLNode> rootNode;
 public:
+    JPtr<BYMLNode> rootNode;
 
     // Make an empty file.
     BYML() {}
@@ -23,7 +30,7 @@ public:
     // Write archive to a stream.
     void Write(BStream& dst);
 
-    // Write to YAML file.
-    void WriteYAML(const JResPath& path);
+    // Write to YAML file. Writes how many external files were written.
+    int WriteYAML(const JResPath& path);
 
 };

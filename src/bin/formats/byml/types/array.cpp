@@ -20,14 +20,15 @@ void BYMLNodeDataArray::Read(BStream& src, const BYMLNodeReadCtx& ctx)
         // Read type.
         if (BYMLNode::IsValue(type))
         {
-            nodes.emplace_back();
+            nodes.emplace_back(JPtrMake(BYMLNode));
             nodes.back()->ReadData(src, type, BYMLNodeReadCtx(src.Tell(), ctx.filePos, ctx.hashTable, ctx.stringTable));
         }
         else
         {
             std::streampos absOff = ctx.filePos + std::streamoff(*src.Read<u32>());
             src.Seek(absOff);
-            nodes.emplace_back(JPtrMake(BYMLNode, src, BYMLNodeReadCtx(absOff, ctx.filePos, ctx.hashTable, ctx.stringTable)));
+            bool isSpecial = BYMLNode::IsSpecial(type);
+            nodes.emplace_back(JPtrMake(BYMLNode, src, BYMLNodeReadCtx(absOff, ctx.filePos, ctx.hashTable, ctx.stringTable), isSpecial ? type : BYML_TYPE_INVALID));
         }
         src.Seek(bak);
     }
@@ -40,13 +41,13 @@ void BYMLNodeDataArray::Write(BStream& dst)
     abort();
 }
 
-void BYMLNodeDataArray::EmitYAML(YAML::Emitter& node)
+void BYMLNodeDataArray::EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd)
 {
     ZoneScopedN("BYMLNodeDataArray::EmitYAML");
     node << YAML::BeginSeq;
     for (auto& item : nodes)
     {
-        item->data->EmitYAML(node);
+        item->data->EmitYAML(node, basePath, currFileInd);
     }
     node << YAML::EndSeq;
 }

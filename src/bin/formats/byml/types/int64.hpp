@@ -2,13 +2,13 @@
 
 #include "../node.hpp"
 
-// String table.
-struct BYMLNodeDataStringTable : BYMLNodeData
+// Int64.
+struct BYMLNodeDataInt64 : BYMLNodeData
 {
-    std::vector<std::string> strs;
+    int64_t val;
 
     // V-functions.
-    virtual BYMLType Type() override { return BYML_TYPE_STRING_TABLE; };
+    virtual BYMLType Type() override { return BYML_TYPE_INT64; };
     virtual void Read(BStream& src, const BYMLNodeReadCtx& ctx) override;
     virtual void Write(BStream& dst) override;
     virtual void EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd) override;
