@@ -1,11 +1,7 @@
 .vscode/
 bin/
 build/
-res/tests/
 res/BUILDTIME
-res/NSMBUDX
-res/romfs/
-res/romfs_simple/
 ./run
 ./clean
 buildStatic
@@ -17,3 +13,4 @@ profile
 lsd.desktop
 Tracy-release
 imgui.ini
+TESTING/
