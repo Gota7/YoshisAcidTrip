@@ -40,6 +40,7 @@ public:
     std::map<std::string, ESettingsMod> mods;
     std::string currMod;
     std::string currTheme = "Wonder";
+    std::string lang = "English";
     JPtr<EStyle> currStyle;
 
     // Make new settings.

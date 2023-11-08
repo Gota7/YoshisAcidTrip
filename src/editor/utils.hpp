@@ -6,6 +6,10 @@
 #include <imgui.h>
 #include <string>
 
+// Error color.
+constexpr ImVec4 NORMAL_FLOWER = ImVec4(0.95f, 0.75f, 0.25f, 1);
+constexpr ImVec4 ERR_FLOWER = ImVec4(1, 0.215f, 0.317f, 1);
+
 // ImGui utils.
 namespace EUtils
 {
@@ -19,10 +23,11 @@ namespace EUtils
         ImGui::Image((ImTextureID)(uintptr_t)tex.GetID(), sizeNew, uv0, uv1, tintCol, borderCol);
     }
 
-    // Show a tooltip when hovered.
-    inline bool Tooltip(EEditor& editor, const std::string& tooltip, const ImVec4& color = ImVec4(0.95f, 0.75f, 0.25f, 1))
+    // Show a tooltip when hovered. Note that this can also check if the tooltip is right clicked.
+    inline bool Tooltip(EEditor& editor, const std::string& tooltip, const ImVec4& color = NORMAL_FLOWER, bool* rightClickedOut = nullptr)
     {
-        static float texFrame = 0.0f;
+        static std::map<std::string, float> frames;
+        float& texFrame = frames[tooltip];
         ImGui::SameLine();
         // ImGui::TextDisabled("(?)");
         float lineHeight = ImGui::GetTextLineHeight();
@@ -30,14 +35,16 @@ namespace EUtils
         float sizeExtra = (lineHeightSpacing - lineHeight) / 2.0f;
         ImVec2 size((lineHeightSpacing + sizeExtra) / 2.0f, lineHeightSpacing + sizeExtra);
         float bakCursor = ImGui::GetCursorPosX();
-        float cursorY = ImGui::GetCursorPosY() - (lineHeightSpacing - lineHeight) / 2.0f - sizeExtra;
+        float cursorY = ImGui::GetCursorPosY() - (lineHeightSpacing - lineHeight) / 2.0f; // - sizeExtra;
         ImGui::SetCursorPosY(cursorY);
         DrawTex(editor.TalkingFlowerFrame((int)texFrame), size, ImVec2(0, 0), ImVec2(1, 1), color);
         bool hovered = ImGui::IsItemHovered();
+        if (rightClickedOut) *rightClickedOut |= ImGui::IsItemClicked(ImGuiMouseButton_Right);
         ImGui::SameLine();
         ImGui::SetCursorPosY(cursorY);
         ImGui::SetCursorPosX(bakCursor + size.x);
         DrawTex(editor.TalkingFlowerFrame((int)texFrame), size, ImVec2(1, 0), ImVec2(0, 1), color);
+        if (rightClickedOut) *rightClickedOut |= ImGui::IsItemClicked(ImGuiMouseButton_Right);
         if (hovered || ImGui::IsItemHovered())
         {
             ImGui::BeginTooltip();
@@ -47,6 +54,7 @@ namespace EUtils
             if (texFrame >= editor.NumTalkingFlowerFrames()) texFrame = 0;
             return true;
         }
+        else texFrame = 0.0f;
         return false;
     }
 

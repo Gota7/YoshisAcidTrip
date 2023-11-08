@@ -8,7 +8,6 @@
 #include "level.hpp"
 #include "settings.hpp"
 #include "styleEditor.hpp"
-#include "utils.h"
 #include "welcome.hpp"
 
 // Forward declare.
@@ -24,6 +23,8 @@ public:
     EStyleEditor styleEditor;
     JPtr<EWelcome> welcomeWindow;
     std::vector<JPtr<JTexture>> talkingFlowerFrames;
+    std::map<std::string, std::string> text; // For different langs.
+    std::string statusText;
 
     // Debug stuff, delete later!
     JUniformBuffer uniforms;

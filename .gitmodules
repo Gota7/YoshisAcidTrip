@@ -17,3 +17,6 @@
 [submodule "subs/zstd"]
 	path = subs/zstd
 	url = https://github.com/facebook/zstd
+[submodule "subs/clip"]
+	path = subs/clip
+	url = https://github.com/dacap/clip

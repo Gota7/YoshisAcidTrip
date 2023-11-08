@@ -1,7 +1,5 @@
 #include "bin.hpp"
 
-#include <format>
-
 void BYMLNodeDataBin::Read(BStream& src, const BYMLNodeReadCtx& ctx)
 {
     ZoneScopedN("BYMLNodeDataBin::Read");
@@ -23,7 +21,7 @@ void BYMLNodeDataBin::EmitYAML(YAML::Emitter& node, const JResPath& basePath, in
     node << YAML::LocalTag("bin") << YAML::Flow << YAML::BeginSeq;
     for (auto& byte : data)
     {
-        node << std::format("{:02X}", byte);
+        node << YAML::Hex << ((unsigned int)byte);
     }
     node << YAML::EndSeq;
 }

@@ -1,0 +1,28 @@
+About: About
+Build_Folder: Build Folder
+Credit_Gota: Gota7 - Lead dev.
+Credit_Ndymario: Ndymario - Mac support and testing.
+Credit_Payonica: Payanica - Ideas, resources, testing.
+Deserialized_Folder: Deserialized Folder
+Edit: Edit
+File: File
+LSD_Desc: "\tAn editor for Super Mario Bros. Wonder."
+LSD_Version: Yoshi's Acid Trip - Version
+Mod_Folder: Mod Folder
+Mod_Folder_Conv_Explain: "\"Mod Folder\" gets serialized/converted back to \"Build Folder\" for playing or sharing your mod."
+Mod_Folder_Use_Explain: "\"Mod Folder\" contains files that replace files in the \"Deserialized Folder\" for making mods smaller in size."
+Mod_Name: Mod Name
+Romfs_Folder: Romfs Folder
+Romfs_Folder_Conv_Explain: "\"Romfs Folder\" gets deserialized/converted into the \"Deserialized Folder\" for editor/user convenience."
+View: View
+Welcome!: Welcome!
+Welcome_Intro: "Welcome to Yoshi's Acid Trip!\nA lucid way to edit Super Mario Bros. Wonder for the Nintendo Switch (allegedly)."
+Welcome_Intro_Billiam: "Hi, you found me!\nMy name is Billiam!\nI give you information on what things are!"
+Welcome_Intro_Demand: Hover over them for more info. Do it now... or not, we can wait here all day.
+Welcome_Intro_Filipio: "I'm here too!\nMy name is Filipio!\nI will tell you what you are doing wrong!"
+Welcome_Intro_Guide1: Before we can start editing the game, we must walk you through setting up a mod.
+Welcome_Intro_Guide2: Separating the original romfs from your mod folder allows you to better organize your files, save storage space, and edit data easier.
+Welcome_Intro_Guide3: In the process we will also convert your romfs to common formats like text and images to make things even easier to edit!
+Welcome_Intro_Guide4: You will also come across many [talking flowers] to help you if you get confused.
+Welcome_To_Editor: Welcome to the editor!
+Window: Window

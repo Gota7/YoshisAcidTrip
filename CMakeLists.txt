@@ -73,6 +73,10 @@ add_library(imgui STATIC
 #imgui_impl_raylib.cpp
 )
 include_directories(subs/imgui)
+option(CLIP_EXAMPLES "" off)
+option(CLIP_TESTS "" off)
+add_subdirectory(subs/clip)
+include_directories(subs/clip)
 
 # Libs.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -104,6 +108,7 @@ endif()
 # Base libs.
 set(LIBS "imgui")
 set(LIBS "${LIBS} yaml-cpp")
+set(LIBS "${LIBS} clip")
 set(LIBS "${LIBS} ${LIB_ZSTD}")
 
 # Debug.

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 // Forward declare.
 class EEditor;
 
@@ -7,8 +9,14 @@ class EEditor;
 class EWelcome
 {
     EEditor& editor;
+    std::string romfsPath;
+    std::string basePath;
+    std::string patchPath;
+    std::string buildPath;
+    std::string modName;
     unsigned int progress = 0;
     bool popped = false;
+    bool fromRomfs = true;
 public:
 
     // Make a new welcome window.
