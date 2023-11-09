@@ -147,7 +147,7 @@ void EEditor::DrawAboutPopup()
         ImGui::TextColored(ImVec4(1, 0.6f, 0, 1), text["Credit_Payonica"].c_str());
         ImGui::TextColored(ImVec4(1, 0, 0, 1), text["Credit_Ndymario"].c_str());
         ImGui::Separator();
-        if (ImGui::Button("Ok"))
+        if (ImGui::Button(text["Ok"].c_str()))
         {
             ImGui::CloseCurrentPopup();
         }

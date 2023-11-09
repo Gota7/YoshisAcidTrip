@@ -1,5 +1,6 @@
 #pragma once
 
+#include "fileBrowser.hpp"
 #include <string>
 
 // Forward declare.
@@ -9,6 +10,7 @@ class EEditor;
 class EWelcome
 {
     EEditor& editor;
+    imgui_addons::ImGuiFileBrowser fb;
     std::string romfsPath;
     std::string basePath;
     std::string patchPath;
