@@ -97,24 +97,83 @@ void EWelcome::DrawUI()
             if (isMore)
             {
                 EUtils::StringEdit(editor.text["Deserialized_Folder"], basePath);
+                ImGui::SameLine();
+                if (ImGui::Button("...##DeserializedFolderSelect"))
+                {
+                    ImGui::OpenPopup(editor.text["Deserialized_Folder_Select"].c_str());
+                }
+                if (fb.showFileDialog(editor.text["Deserialized_Folder_Select"], imgui_addons::ImGuiFileBrowser::DialogMode::SELECT))
+                {
+                    basePath = fb.selected_path;
+                }
                 EUtils::Tooltip(editor, editor.text["Deserialized_Folder_Explain"]);
-                // TODO: FIGURE OUT HOW TO CHECK THIS!!!
+                if (!std::filesystem::exists(basePath))
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Does_Not_Exist"], ERR_FLOWER);
+                    isMore = false;
+                }
+                else if (std::filesystem::exists(basePath + "/RSDB/StageInfo.Product.100.rstbl.byml.zs")) // Hardcoded file that should be there lol.
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Is_Romfs"], ERR_FLOWER);
+                    isMore = false;
+                }
+                else if (!fromRomfs && !std::filesystem::exists(basePath + "/LSD_VERSION.yaml"))
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Is_Not_Deserialized_Folder"], ERR_FLOWER);
+                    isMore = false;
+                }
             }
 
             // Mod path.
             if (isMore)
             {
                 EUtils::StringEdit(editor.text["Mod_Folder"], patchPath);
+                ImGui::SameLine();
+                if (ImGui::Button("...##ModFolderSelect"))
+                {
+                    ImGui::OpenPopup(editor.text["Mod_Folder_Select"].c_str());
+                }
+                if (fb.showFileDialog(editor.text["Mod_Folder_Select"], imgui_addons::ImGuiFileBrowser::DialogMode::SELECT))
+                {
+                    patchPath = fb.selected_path;
+                }
                 EUtils::Tooltip(editor, editor.text["Mod_Folder_Explain"]);
-                // TODO: FIGURE OUT HOW TO CHECK THIS!!!
+                if (!std::filesystem::exists(patchPath))
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Does_Not_Exist"], ERR_FLOWER);
+                    isMore = false;
+                }
+                else if (std::filesystem::exists(patchPath + "/RSDB/StageInfo.Product.100.rstbl.byml.zs")) // Hardcoded file that should be there lol.
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Is_Romfs"], ERR_FLOWER);
+                    isMore = false;
+                }
             }
 
             // Build path.
             if (isMore)
             {
                 EUtils::StringEdit(editor.text["Build_Folder"], buildPath);
+                ImGui::SameLine();
+                if (ImGui::Button("...##BuildFolderSelect"))
+                {
+                    ImGui::OpenPopup(editor.text["Build_Folder_Select"].c_str());
+                }
+                if (fb.showFileDialog(editor.text["Build_Folder_Select"], imgui_addons::ImGuiFileBrowser::DialogMode::SELECT))
+                {
+                    buildPath = fb.selected_path;
+                }
                 EUtils::Tooltip(editor, editor.text["Build_Folder_Explain"]);
-                // TODO: FIGURE OUT HOW TO CHECK THIS!!!
+                if (!std::filesystem::exists(buildPath))
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Does_Not_Exist"], ERR_FLOWER);
+                    isMore = false;
+                }
+                else if (std::filesystem::exists(buildPath + "/RSDB/StageInfo.Product.100.rstbl.byml.zs")) // Hardcoded file that should be there lol.
+                {
+                    EUtils::Tooltip(editor, editor.text["Path_Is_Romfs"], ERR_FLOWER);
+                    isMore = false;
+                }
             }
 
             // Mod name.
