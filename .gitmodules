@@ -20,3 +20,6 @@
 [submodule "subs/clip"]
 	path = subs/clip
 	url = https://github.com/dacap/clip
+[submodule "subs/lua"]
+	path = subs/lua
+	url = https://github.com/walterschell/Lua

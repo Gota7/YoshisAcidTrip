@@ -1,24 +1,24 @@
-About: About
-Build_Folder: Build Folder
-Build_Folder_Explain: "You can not play a mod folder without converting/serializing it back first!\nThis is the folder where your mod will be converted to something playable or sharable for people to play.\nThis should probably be a mod romfs path in your emulator for easier playback."
-Build_Folder_Select: Select Build Folder
+About: Brochure
+Build_Folder: Folder Of Build
+Build_Folder_Explain: "I'm afraid that you must select a location for the modified build to be placed.\nThis requirement is for the fact that a build folder is where a playable and distributable modification will be.\nFor convenience, I do recommend setting this to a path accessible by your emulation software."
+Build_Folder_Select: Select Folder Of Build
 Create_Deserialized_Folder: Create Base Folder From Romfs
 Create_Deserialized_Folder_Explain: "Check this if you need to create a base folder for your mod using the Romfs of Mario Wonder.\nYou should keep this checked if this is your first time running the editor or lost your romfs base folder."
-Credit_Gota: Gota7 - Lead dev.
-Credit_Ndymario: Ndymario - Mac support and testing.
-Credit_Payonica: Payanica - Ideas, resources, testing.
+Credit_Gota: Gota7 - The craftsman.
+Credit_Ndymario: Ndymario - Performed experimentation on the platform of the south.
+Credit_Payonica: Payanica - Donated funding of the mind and experimented.
 Copied_Reddit_Link: Copied reddit link to clipboard.
 Deserialized_Folder: Deserialized Folder
 Deserialized_Folder_Explain: "If \"Create Base Folder From Romfs\" is checked, this will be where to deserialize the romfs to.\nDeserializing the romfs lets you and the editor view and edit the files more easily.\nFor example, BYML is converted to YAML, SARCs are extracted, ZS files decompressed, images converted, etc.\nIf \"Create Base Folder From Romfs\" is not checked, this should be the path to an already deserialized romfs."
 Deserialized_Folder_Select: Select Deserialized Folder
-Edit: Edit
-File: File
+Edit: Editorial Tooling
+File: Registry
 Hello: Hello
 Language: Language
-LSD_Desc: "\tAn editor for Super Mario Bros. Wonder."
-LSD_Version: Yoshi's Acid Trip - Version
-Mod: Mod
-Mod_Folder: Mod Folder
+LSD_Desc: "\tA method of modifying Mario's latest travels."
+LSD_Version: The Trip Of Yoshi Involving Acid - Presently
+Mod: Modification
+Mod_Folder: Folder Of Modification
 Mod_Folder_Conv_Explain: "\"Mod Folder\" gets serialized/converted back to \"Build Folder\" for playing or sharing your mod."
 Mod_Folder_Explain: "This is where your mod's files will be stored.\nNote that the files here are deserialized to be as editable as possible like in the deserialized folder.\nThink of the files here as a replacement for files in the deserialized romfs folder.\nIf a file is not found here, it will be loaded from the deserialized folder.\nNote that no files will or ever should be modified in the deserialized folder!"
 Mod_Folder_Select: Select Mod Folder
@@ -26,7 +26,7 @@ Mod_Folder_Use_Explain: "\"Mod Folder\" contains files that replace files in the
 Mod_Name: Mod Name
 Mod_Name_Appreciated: "I like it!\nIf you don't like it in the future, you can change it in the settings window!"
 Mod_Name_Needed: "Let's give your mod a name!\nDon't worry, you can change it later!"
-Ok: Ok
+Ok: Alright
 Path_Bad_Romfs: "The path selected is not a valid romfs dump!\nMake sure it is not inside another folder in the folder you selected\nTry again!"
 Path_Does_Not_Exist: "The path selected does not exist!\nTry again!"
 Path_Is_Deserialized_Or_Mod_Folder: "The path selected is either a deserialized folder or a mod folder!\nTry again!"
@@ -36,10 +36,10 @@ Romfs_Folder: Romfs Folder
 Romfs_Folder_Conv_Explain: "\"Romfs Folder\" gets deserialized/converted into the \"Deserialized Folder\" for editor/user convenience."
 Romfs_Folder_Explain: "Path to a completely unmodified romfs folder of Mario Wonder.\nRight click me to copy a link on how to dump the romfs for the game to your clipboard!"
 Romfs_Folder_Select: Select Romfs Folder
-Settings: Settings
+Settings: Configuration
 Style: Style
-View: View
-Welcome!: Welcome!
+View: Observation
+Welcome!: I Welcome You
 Welcome_Intro: "Welcome to Yoshi's Acid Trip!\nA lucid way to edit Super Mario Bros. Wonder for the Nintendo Switch (allegedly)."
 Welcome_Intro_Billiam: "Hi, you found me!\nMy name is Billiam!\nI give you information on what things are!"
 Welcome_Intro_Demand: Hover over them for more info. Do it now... or not, we can wait here all day.
@@ -49,7 +49,7 @@ Welcome_Intro_Guide2: Separating the original romfs from your mod folder allows 
 Welcome_Intro_Guide3: In the process we will also convert your romfs to common formats like text and images to make things even easier to edit!
 Welcome_Intro_Guide4: You will also come across many [talking flowers] to help you if you get confused.
 Welcome_Intro_Settings: "You can configure some features about the editor such as what mouse buttons do, the theme, and the language here!\nDon't worry, you can adjust these settings later with the settings window.\nAfter you are done configuring, select the \"Mod\" tab to start setting up your mod."
-Welcome_To_Editor: Welcome to the editor!
-Window: Window
-Wondering_How_To_Continue: Wondering how to continue?
-Wondering_How_To_Continue_Explain: "There is no button here because either you didn't select a path or the path chosen is invalid!\nMake sure to read what we say if you are confused and to check the lowest path on the list!\nI show up on errors, so hover over me above if you see me!"
+Welcome_To_Editor: I bid you a warm welcome.
+Window: Navigations
+Wondering_How_To_Continue: Is it in your best interest to continue?
+Wondering_How_To_Continue_Explain: "I'm afraid you are halted from continuing as there are faults above.\nDo be sure to inquire from the most recent lookalike of mine above my abode.\nDo chat, I tend to be of much interest."

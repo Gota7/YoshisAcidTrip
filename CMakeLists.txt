@@ -77,6 +77,7 @@ option(CLIP_EXAMPLES "" off)
 option(CLIP_TESTS "" off)
 add_subdirectory(subs/clip)
 include_directories(subs/clip)
+add_subdirectory(subs/lua)
 
 # Libs.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -108,6 +109,7 @@ endif()
 # Base libs.
 set(LIBS "imgui")
 set(LIBS "${LIBS} yaml-cpp")
+set(LIBS "${LIBS} lua_static")
 set(LIBS "${LIBS} clip")
 set(LIBS "${LIBS} ${LIB_ZSTD}")
 

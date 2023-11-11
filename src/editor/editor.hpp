@@ -5,6 +5,7 @@
 #include "../jsystem/texture.hpp"
 #include "../jsystem/uniformBuffer.hpp"
 #include "../jsystem/vertex.hpp"
+#include "../plugin/plugin.hpp"
 #include "level.hpp"
 #include "settings.hpp"
 #include "styleEditor.hpp"
@@ -23,6 +24,7 @@ public:
     EStyleEditor styleEditor;
     JPtr<EWelcome> welcomeWindow;
     std::vector<JPtr<JTexture>> talkingFlowerFrames;
+    std::vector<JPtr<PPlugin>> plugins;
     std::map<std::string, std::string> text; // For different langs.
     std::string statusText;
 
