@@ -11,6 +11,7 @@
 [submodule "subs/imgui"]
 	path = subs/imgui
 	url = https://github.com/ocornut/imgui
+	branch = docking
 [submodule "subs/yaml-cpp"]
 	path = subs/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp

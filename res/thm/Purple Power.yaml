@@ -1,0 +1,331 @@
+Font:
+  Name: Default
+  Size: 12
+Theme:
+  Alpha: 1
+  AntiAliasedFill: true
+  AntiAliasedLines: true
+  AntiAliasedLinesUseTex: true
+  ButtonTextAlignX: 0.5
+  ButtonTextAlignY: 0.5
+  CellPaddingX: 4
+  CellPaddingY: 2
+  ChildBorderSize: 1
+  ChildRounding: 7
+  CircleTessellationMaxError: 0.300000012
+  ColorButtonPosition: 1
+  Colors:
+    Text:
+      R: 1
+      G: 1
+      B: 1
+      A: 1
+    TextDisabled:
+      R: 0.5
+      G: 0.5
+      B: 0.5
+      A: 1
+    WindowBg:
+      R: 0.0599999987
+      G: 0.0599999987
+      B: 0.0599999987
+      A: 0.939999998
+    ChildBg:
+      R: 0
+      G: 0
+      B: 0
+      A: 0
+    PopupBg:
+      R: 0.0799999982
+      G: 0.0799999982
+      B: 0.0799999982
+      A: 0.939999998
+    Border:
+      R: 0.430000007
+      G: 0.430000007
+      B: 0.5
+      A: 0.5
+    BorderShadow:
+      R: 0
+      G: 0
+      B: 0
+      A: 0
+    FrameBg:
+      R: 0.212326005
+      G: 0
+      B: 0.392264992
+      A: 0.540000021
+    FrameBgHovered:
+      R: 0.405420989
+      G: 0.0649553016
+      B: 0.734807014
+      A: 1
+    FrameBgActive:
+      R: 0.469817013
+      G: 0.104606003
+      B: 0.823203981
+      A: 1
+    TitleBg:
+      R: 0.163776994
+      G: 0.0247245003
+      B: 0.298343003
+      A: 1
+    TitleBgActive:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    TitleBgCollapsed:
+      R: 0
+      G: 0
+      B: 0
+      A: 0.50999999
+    MenuBarBg:
+      R: 0.140000001
+      G: 0.140000001
+      B: 0.140000001
+      A: 1
+    ScrollbarBg:
+      R: 0.0199999996
+      G: 0.0199999996
+      B: 0.0199999996
+      A: 0.529999971
+    ScrollbarGrab:
+      R: 0.310000002
+      G: 0.310000002
+      B: 0.310000002
+      A: 1
+    ScrollbarGrabHovered:
+      R: 0.409999996
+      G: 0.409999996
+      B: 0.409999996
+      A: 1
+    ScrollbarGrabActive:
+      R: 0.50999999
+      G: 0.50999999
+      B: 0.50999999
+      A: 1
+    CheckMark:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    SliderGrab:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    SliderGrabActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    Button:
+      R: 0.332659006
+      G: 0.0769207031
+      B: 0.580110013
+      A: 1
+    ButtonHovered:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    ButtonActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    Header:
+      R: 0.332659006
+      G: 0.0769207031
+      B: 0.580110013
+      A: 1
+    HeaderHovered:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    HeaderActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    Separator:
+      R: 0.430000007
+      G: 0.430000007
+      B: 0.5
+      A: 0.5
+    SeparatorHovered:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    SeparatorActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    ResizeGrip:
+      R: 0.332659006
+      G: 0.0769207031
+      B: 0.580110013
+      A: 1
+    ResizeGripHovered:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    ResizeGripActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    Tab:
+      R: 0.277630001
+      G: 0.0393150002
+      B: 0.508287013
+      A: 1
+    TabHovered:
+      R: 0.516538024
+      G: 0.0968530029
+      B: 0.922652006
+      A: 1
+    TabActive:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    TabUnfocused:
+      R: 0.391624004
+      G: 0.162632003
+      B: 0.613259971
+      A: 1
+    TabUnfocusedActive:
+      R: 0.537061989
+      G: 0.184426993
+      B: 0.878453016
+      A: 1
+    DockingPreview:
+      R: 0.25999999
+      G: 0.589999974
+      B: 0.980000019
+      A: 0.699999988
+    DockingEmptyBg:
+      R: 0.200000003
+      G: 0.200000003
+      B: 0.200000003
+      A: 1
+    PlotLines:
+      R: 0.610000014
+      G: 0.610000014
+      B: 0.610000014
+      A: 1
+    PlotLinesHovered:
+      R: 1
+      G: 0.430000007
+      B: 0.349999994
+      A: 1
+    PlotHistogram:
+      R: 0.606630027
+      G: 0
+      B: 0.899999976
+      A: 1
+    PlotHistogramHovered:
+      R: 1
+      G: 0.600000024
+      B: 0
+      A: 1
+    TableHeaderBg:
+      R: 0.189999998
+      G: 0.189999998
+      B: 0.200000003
+      A: 1
+    TableBorderStrong:
+      R: 0.310000002
+      G: 0.310000002
+      B: 0.349999994
+      A: 1
+    TableBorderLight:
+      R: 0.230000004
+      G: 0.230000004
+      B: 0.25
+      A: 1
+    TableRowBg:
+      R: 0
+      G: 0
+      B: 0
+      A: 0
+    TableRowBgAlt:
+      R: 1
+      G: 1
+      B: 1
+      A: 0.0599999987
+    TextSelectedBg:
+      R: 0.477881014
+      G: 0.0980738997
+      B: 0.845304012
+      A: 1
+    DragDropTarget:
+      R: 1
+      G: 1
+      B: 0
+      A: 0.899999976
+    NavHighlight:
+      R: 0.641442001
+      G: 0.287963986
+      B: 0.983425021
+      A: 1
+    NavWindowingHighlight:
+      R: 1
+      G: 1
+      B: 1
+      A: 0.699999988
+    NavWindowingDimBg:
+      R: 0.800000012
+      G: 0.800000012
+      B: 0.800000012
+      A: 0.200000003
+    ModalWindowDimBg:
+      R: 0.800000012
+      G: 0.800000012
+      B: 0.800000012
+      A: 0.349999994
+  ColumnsMinSpacing: 6
+  CurveTessellationTol: 1.25
+  DisplaySafeAreaPaddingX: 3
+  DisplaySafeAreaPaddingY: 3
+  DisplayWindowPaddingX: 19
+  DisplayWindowPaddingY: 19
+  FrameBorderSize: 0
+  FramePaddingX: 4
+  FramePaddingY: 3
+  FrameRounding: 4
+  GrabMinSize: 10
+  GrabRounding: 7
+  IndentSpacing: 21
+  ItemInnerSpacingX: 4
+  ItemInnerSpacingY: 4
+  ItemSpacingX: 5
+  ItemSpacingY: 4
+  LogSliderDeadzone: 4
+  MouseCursorScale: 1
+  PopupBorderSize: 1
+  PopupRounding: 7
+  ScrollbarRounding: 9
+  ScrollbarSize: 14
+  SelectableTextAlignX: 0
+  SelectableTextAlignY: 0
+  TabBorderSize: 0
+  TabMinWidthForCloseButton: 0
+  TabRounding: 4
+  TouchExtraPaddingX: 0
+  TouchExtraPaddingY: 0
+  WindowBorderSize: 1
+  WindowMenuButtonPosition: 0
+  WindowMinSizeX: 32
+  WindowMinSizeY: 32
+  WindowPaddingX: 8
+  WindowPaddingY: 8
+  WindowRounding: 7
+  WindowTitleAlignX: 0
+  WindowTitleAlignY: 0.5

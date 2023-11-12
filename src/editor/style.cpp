@@ -1,7 +1,7 @@
-#include <editor/style.hpp>
+#include "style.hpp"
 
 #include "../jsystem/window.hpp"
-#include "inicpp.hpp"
+#include "../yaml/helper.hpp"
 #include <iostream>
 
 const JResPath STYLE_DEFAULT = JResPath("default");
@@ -14,7 +14,7 @@ EStyle::EStyle(const JResPath& path)
         ImGui::StyleColorsClassic(&style);
         return;
     }
-    ini::IniFile t = ini::IniFile(path.fullPath);
+    YAML::Node t = YAML::LoadFile(path.fullPath);
     font = t["Font"]["Name"].as<std::string>();
     if (!JFileSystem::FileExists(JFileSystem::PathSeparators("fnt/" + font + ".ttf")))
     {
@@ -33,12 +33,16 @@ EStyle::EStyle(const JResPath& path)
     style.ChildRounding = t["Theme"]["ChildRounding"].as<float>();
     style.CircleTessellationMaxError = t["Theme"]["CircleTessellationMaxError"].as<float>();
     style.ColorButtonPosition = (ImGuiDir)t["Theme"]["ColorButtonPosition"].as<int>();
-    for (int i = 0; i < 53; i++)
+    for (int i = 0; i < ImGuiCol_COUNT; i++)
     {
-        style.Colors[i].x = t["Theme"]["ColorR_" + std::to_string(i)].as<float>();
-        style.Colors[i].y = t["Theme"]["ColorG_" + std::to_string(i)].as<float>();
-        style.Colors[i].z = t["Theme"]["ColorB_" + std::to_string(i)].as<float>();
-        style.Colors[i].w = t["Theme"]["ColorA_" + std::to_string(i)].as<float>();
+        std::string key = ImGui::GetStyleColorName(i);
+        if (t["Theme"]["Colors"][key].IsDefined())
+        {
+            style.Colors[i].x = t["Theme"]["Colors"][key]["R"].as<float>();
+            style.Colors[i].y = t["Theme"]["Colors"][key]["G"].as<float>();
+            style.Colors[i].z = t["Theme"]["Colors"][key]["B"].as<float>();
+            style.Colors[i].w = t["Theme"]["Colors"][key]["A"].as<float>();
+        }
     }
     style.ColumnsMinSpacing = t["Theme"]["ColumnsMinSpacing"].as<float>();
     style.CurveTessellationTol = t["Theme"]["CurveTessellationTol"].as<float>();
@@ -91,68 +95,75 @@ void EStyle::Save(const JResPath& path)
 {
     ZoneScopedN("EStyle::Save");
     if (path.fullPath == STYLE_DEFAULT.fullPath) return;
-    ini::IniFile t;
-    t["Font"]["Name"] = font;
-    t["Font"]["Size"] = fontSize;
-    t["Theme"]["Alpha"] = style.Alpha;
-    t["Theme"]["AntiAliasedFill"] = style.AntiAliasedFill;
-    t["Theme"]["AntiAliasedLines"] = style.AntiAliasedLines;
-    t["Theme"]["AntiAliasedLinesUseTex"] = style.AntiAliasedLinesUseTex;
-    t["Theme"]["ButtonTextAlignX"] = style.ButtonTextAlign.x;
-    t["Theme"]["ButtonTextAlignY"] = style.ButtonTextAlign.y;
-    t["Theme"]["CellPaddingX"] = style.CellPadding.x;
-    t["Theme"]["CellPaddingY"] = style.CellPadding.y;
-    t["Theme"]["ChildBorderSize"] = style.ChildBorderSize;
-    t["Theme"]["ChildRounding"] = style.ChildRounding;
-    t["Theme"]["CircleTessellationMaxError"] = style.CircleTessellationMaxError;
-    t["Theme"]["ColorButtonPosition"] = (int)style.ColorButtonPosition;
-    for (int i = 0; i < 53; i++)
+    auto yamlFile = JFileSystem::SaveFile(path);
+    YAML::Emitter node(yamlFile);
+    node << YAML::BeginMap << YAML::Key << "Font" << YAML::Value << YAML::BeginMap;
+    YAML::KeyValue(node, "Name", font);
+    YAML::KeyValue(node, "Size", fontSize);
+    node << YAML::EndMap << YAML::Key << "Theme" << YAML::Value << YAML::BeginMap;
+    YAML::KeyValue(node, "Alpha", style.Alpha);
+    YAML::KeyValue(node, "AntiAliasedFill", style.AntiAliasedFill);
+    YAML::KeyValue(node, "AntiAliasedLines", style.AntiAliasedLines);
+    YAML::KeyValue(node, "AntiAliasedLinesUseTex", style.AntiAliasedLinesUseTex);
+    YAML::KeyValue(node, "ButtonTextAlignX", style.ButtonTextAlign.x);
+    YAML::KeyValue(node, "ButtonTextAlignY", style.ButtonTextAlign.y);
+    YAML::KeyValue(node, "CellPaddingX", style.CellPadding.x);
+    YAML::KeyValue(node, "CellPaddingY", style.CellPadding.y);
+    YAML::KeyValue(node, "ChildBorderSize", style.ChildBorderSize);
+    YAML::KeyValue(node, "ChildRounding", style.ChildRounding);
+    YAML::KeyValue(node, "CircleTessellationMaxError", style.CircleTessellationMaxError);
+    YAML::KeyValue(node, "ColorButtonPosition", (int)style.ColorButtonPosition);
+    node << YAML::Key << "Colors" << YAML::Value << YAML::BeginMap;
+    for (int i = 0; i < ImGuiCol_COUNT; i++)
     {
-        t["Theme"]["ColorR_" + std::to_string(i)] = style.Colors[i].x;
-        t["Theme"]["ColorG_" + std::to_string(i)] = style.Colors[i].y;
-        t["Theme"]["ColorB_" + std::to_string(i)] = style.Colors[i].z;
-        t["Theme"]["ColorA_" + std::to_string(i)] = style.Colors[i].w;
+        node << YAML::Key << ImGui::GetStyleColorName(i) << YAML::Value << YAML::BeginMap;
+        YAML::KeyValue(node, "R", style.Colors[i].x);
+        YAML::KeyValue(node, "G", style.Colors[i].y);
+        YAML::KeyValue(node, "B", style.Colors[i].z);
+        YAML::KeyValue(node, "A", style.Colors[i].w);
+        node << YAML::EndMap;
     }
-    t["Theme"]["ColumnsMinSpacing"] = style.ColumnsMinSpacing;
-    t["Theme"]["CurveTessellationTol"] = style.CurveTessellationTol;
-    t["Theme"]["DisplaySafeAreaPaddingX"] = style.DisplaySafeAreaPadding.x;
-    t["Theme"]["DisplaySafeAreaPaddingY"] = style.DisplaySafeAreaPadding.y;
-    t["Theme"]["DisplayWindowPaddingX"] = style.DisplayWindowPadding.x;
-    t["Theme"]["DisplayWindowPaddingY"] = style.DisplayWindowPadding.y;
-    t["Theme"]["FrameBorderSize"] = style.FrameBorderSize;
-    t["Theme"]["FramePaddingX"] = style.FramePadding.x;
-    t["Theme"]["FramePaddingY"] = style.FramePadding.y;
-    t["Theme"]["FrameRounding"] = style.FrameRounding;
-    t["Theme"]["GrabMinSize"] = style.GrabMinSize;
-    t["Theme"]["GrabRounding"] = style.GrabRounding;
-    t["Theme"]["IndentSpacing"] = style.IndentSpacing;
-    t["Theme"]["ItemInnerSpacingX"] = style.ItemInnerSpacing.x;
-    t["Theme"]["ItemInnerSpacingY"] = style.ItemInnerSpacing.y;
-    t["Theme"]["ItemSpacingX"] = style.ItemSpacing.x;
-    t["Theme"]["ItemSpacingY"] = style.ItemSpacing.y;
-    t["Theme"]["LogSliderDeadzone"] = style.LogSliderDeadzone;
-    t["Theme"]["MouseCursorScale"] = style.MouseCursorScale;
-    t["Theme"]["PopupBorderSize"] = style.PopupBorderSize;
-    t["Theme"]["PopupRounding"] = style.PopupRounding;
-    t["Theme"]["ScrollbarRounding"] = style.ScrollbarRounding;
-    t["Theme"]["ScrollbarSize"] = style.ScrollbarSize;
-    t["Theme"]["SelectableTextAlignX"] = style.SelectableTextAlign.x;
-    t["Theme"]["SelectableTextAlignY"] = style.SelectableTextAlign.y;
-    t["Theme"]["TabBorderSize"] = style.TabBorderSize;
-    t["Theme"]["TabMinWidthForCloseButton"] = style.TabMinWidthForCloseButton;
-    t["Theme"]["TabRounding"] = style.TabRounding;
-    t["Theme"]["TouchExtraPaddingX"] = style.TouchExtraPadding.x;
-    t["Theme"]["TouchExtraPaddingY"] = style.TouchExtraPadding.y;
-    t["Theme"]["WindowBorderSize"] = style.WindowBorderSize;
-    t["Theme"]["WindowMenuButtonPosition"] = (int)style.WindowMenuButtonPosition;
-    t["Theme"]["WindowMinSizeX"] = style.WindowMinSize.x;
-    t["Theme"]["WindowMinSizeY"] = style.WindowMinSize.y;
-    t["Theme"]["WindowPaddingX"] = style.WindowPadding.x;
-    t["Theme"]["WindowPaddingY"] = style.WindowPadding.y;
-    t["Theme"]["WindowRounding"] = style.WindowRounding;
-    t["Theme"]["WindowTitleAlignX"] = style.WindowTitleAlign.x;
-    t["Theme"]["WindowTitleAlignY"] = style.WindowTitleAlign.y;
-    t.save(path.fullPath);
+    node << YAML::EndMap;
+    YAML::KeyValue(node, "ColumnsMinSpacing", style.ColumnsMinSpacing);
+    YAML::KeyValue(node, "CurveTessellationTol", style.CurveTessellationTol);
+    YAML::KeyValue(node, "DisplaySafeAreaPaddingX", style.DisplaySafeAreaPadding.x);
+    YAML::KeyValue(node, "DisplaySafeAreaPaddingY", style.DisplaySafeAreaPadding.y);
+    YAML::KeyValue(node, "DisplayWindowPaddingX", style.DisplayWindowPadding.x);
+    YAML::KeyValue(node, "DisplayWindowPaddingY", style.DisplayWindowPadding.y);
+    YAML::KeyValue(node, "FrameBorderSize", style.FrameBorderSize);
+    YAML::KeyValue(node, "FramePaddingX", style.FramePadding.x);
+    YAML::KeyValue(node, "FramePaddingY", style.FramePadding.y);
+    YAML::KeyValue(node, "FrameRounding", style.FrameRounding);
+    YAML::KeyValue(node, "GrabMinSize", style.GrabMinSize);
+    YAML::KeyValue(node, "GrabRounding", style.GrabRounding);
+    YAML::KeyValue(node, "IndentSpacing", style.IndentSpacing);
+    YAML::KeyValue(node, "ItemInnerSpacingX", style.ItemInnerSpacing.x);
+    YAML::KeyValue(node, "ItemInnerSpacingY", style.ItemInnerSpacing.y);
+    YAML::KeyValue(node, "ItemSpacingX", style.ItemSpacing.x);
+    YAML::KeyValue(node, "ItemSpacingY", style.ItemSpacing.y);
+    YAML::KeyValue(node, "LogSliderDeadzone", style.LogSliderDeadzone);
+    YAML::KeyValue(node, "MouseCursorScale", style.MouseCursorScale);
+    YAML::KeyValue(node, "PopupBorderSize", style.PopupBorderSize);
+    YAML::KeyValue(node, "PopupRounding", style.PopupRounding);
+    YAML::KeyValue(node, "ScrollbarRounding", style.ScrollbarRounding);
+    YAML::KeyValue(node, "ScrollbarSize", style.ScrollbarSize);
+    YAML::KeyValue(node, "SelectableTextAlignX", style.SelectableTextAlign.x);
+    YAML::KeyValue(node, "SelectableTextAlignY", style.SelectableTextAlign.y);
+    YAML::KeyValue(node, "TabBorderSize", style.TabBorderSize);
+    YAML::KeyValue(node, "TabMinWidthForCloseButton", style.TabMinWidthForCloseButton);
+    YAML::KeyValue(node, "TabRounding", style.TabRounding);
+    YAML::KeyValue(node, "TouchExtraPaddingX", style.TouchExtraPadding.x);
+    YAML::KeyValue(node, "TouchExtraPaddingY", style.TouchExtraPadding.y);
+    YAML::KeyValue(node, "WindowBorderSize", style.WindowBorderSize);
+    YAML::KeyValue(node, "WindowMenuButtonPosition", (int)style.WindowMenuButtonPosition);
+    YAML::KeyValue(node, "WindowMinSizeX", style.WindowMinSize.x);
+    YAML::KeyValue(node, "WindowMinSizeY", style.WindowMinSize.y);
+    YAML::KeyValue(node, "WindowPaddingX", style.WindowPadding.x);
+    YAML::KeyValue(node, "WindowPaddingY", style.WindowPadding.y);
+    YAML::KeyValue(node, "WindowRounding", style.WindowRounding);
+    YAML::KeyValue(node, "WindowTitleAlignX", style.WindowTitleAlign.x);
+    YAML::KeyValue(node, "WindowTitleAlignY", style.WindowTitleAlign.y);
+    node << YAML::EndMap << YAML::EndMap;
 }
 
 void EStyle::Set(JWindow& window)

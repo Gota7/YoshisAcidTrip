@@ -19,6 +19,7 @@ class EWelcome
     unsigned int progress = 0;
     bool popped = false;
     bool fromRomfs = true;
+    bool converting = false;
 public:
 
     // Make a new welcome window.

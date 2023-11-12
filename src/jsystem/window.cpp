@@ -154,7 +154,9 @@ JWindow::JWindow(const std::string& title)
     // ImGui init.
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigDockingWithShift = false;
     ImGui::StyleColorsDark();
     // ImGui_ImplGlfw_InitForOpenGL(window, true);
     const char* glsl_version = "#version 150";

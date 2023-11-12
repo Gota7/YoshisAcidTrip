@@ -34,10 +34,34 @@
 using namespace LuaCpp;
 using namespace LuaCpp::Engine;
 
+static int LuaCpp_u_newindex(lua_State *L) {
+	void * ud = lua_touserdata(L, 1);
+	LuaState _L(L, true);
+	int res = (**((LuaMetaObject **) ud))._setValue(_L);
+
+	return res;
+}
+
+static int LuaCpp_u_index(lua_State *L) {
+	void * ud = lua_touserdata(L, 1);
+	LuaState _L(L, true);
+	int res = (**((LuaMetaObject **) ud))._getValue(_L);
+
+	return res;
+}
+
+static int LuaCpp_u_call(lua_State *L) {
+	void * ud = lua_touserdata(L, 1);
+	LuaState _L(L, true);
+	int res = (**((LuaMetaObject **) ud)).Execute(_L);
+
+	return res;
+}
+
 LuaMetaObject::LuaMetaObject() : LuaTUserData(sizeof(LuaMetaObject *)) {
-	AddMetaFunction("__index", u_index);
-	AddMetaFunction("__newindex", u_newindex);
-	AddMetaFunction("__call", u_call);
+	AddMetaFunction("__index", LuaCpp_u_index);
+	AddMetaFunction("__newindex", LuaCpp_u_newindex);
+	AddMetaFunction("__call", LuaCpp_u_call);
 }
 
 void LuaMetaObject::_storeData() {
@@ -113,29 +137,4 @@ int LuaMetaObject::_setValue(LuaState &L) {
 
 int LuaMetaObject::Execute(LuaState &L) {
 	return 0;
-}
-
-static int LuaCpp::u_newindex(lua_State *L) {
-	void * ud = lua_touserdata(L, 1);
-	LuaState _L(L, true);
-	int res = (**((LuaMetaObject **) ud))._setValue(_L);
-
-	return res;
-}
-
-static int LuaCpp::u_index(lua_State *L) {
-	void * ud = lua_touserdata(L, 1);
-	LuaState _L(L, true);
-	int res = (**((LuaMetaObject **) ud))._getValue(_L);
-
-	return res;
-}
-
-
-static int LuaCpp::u_call(lua_State *L) {
-	void * ud = lua_touserdata(L, 1);
-	LuaState _L(L, true);
-	int res = (**((LuaMetaObject **) ud)).Execute(_L);
-
-	return res;
 }

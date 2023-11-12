@@ -181,7 +181,7 @@ bool ESettings::GetTheme(void* data, int idx, const char** outText)
 JResPath ESettings::ThemePath(const std::string& name)
 {
     ZoneScopedN("ESettings::ThemePath");
-    return JResPath(JFileSystem::PathSeparators(JResPath("thm").fullPath + "/" + name + ".ini"), true);
+    return JResPath(JFileSystem::PathSeparators(JResPath("thm").fullPath + "/" + name + ".yaml"), true);
 }
 
 bool ESettings::DrawThemeSelector(EEditor& editor)

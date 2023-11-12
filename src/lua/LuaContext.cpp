@@ -161,7 +161,7 @@ std::unique_ptr<LuaState> LuaContext::RunWithState(const std::string &name, std:
 	std::unique_ptr<LuaCodeSnippet> cs = registry.getByName(name);
 	cs->UploadCode(*L);
 	int res = lua_pcall(*L, 0, LUA_MULTRET, 0);
-	if (res != LUA_OK ) {
+	if (res != LUA_OK) {
 		L->PrintStack(std::cout);
 		throw std::runtime_error(lua_tostring(*L,1));
 	}

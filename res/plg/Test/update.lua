@@ -1,1 +1,2 @@
-print(secret)
+-- print(secret)
+-- doThing()

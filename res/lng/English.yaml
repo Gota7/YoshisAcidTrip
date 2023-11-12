@@ -11,8 +11,10 @@ Copied_Reddit_Link: Copied reddit link to clipboard.
 Deserialized_Folder: Deserialized Folder
 Deserialized_Folder_Explain: "If \"Create Base Folder From Romfs\" is checked, this will be where to deserialize the romfs to.\nDeserializing the romfs lets you and the editor view and edit the files more easily.\nFor example, BYML is converted to YAML, SARCs are extracted, ZS files decompressed, images converted, etc.\nIf \"Create Base Folder From Romfs\" is not checked, this should be the path to an already deserialized romfs."
 Deserialized_Folder_Select: Select Deserialized Folder
+Done: Done
 Edit: Edit
 File: File
+Finish: Finish
 Hello: Hello
 Language: Language
 LSD_Desc: "\tAn editor for Super Mario Bros. Wonder."
@@ -40,6 +42,8 @@ Settings: Settings
 Style: Style
 View: View
 Welcome!: Welcome!
+Welcome_Finish: "Thank you for using Yoshi's Acid Trip.\nWe look forward to seeing what you create!"
+Welcome_Finish_Help: If you need help, select Help->Guide on the top bar in the editor.
 Welcome_Intro: "Welcome to Yoshi's Acid Trip!\nA lucid way to edit Super Mario Bros. Wonder for the Nintendo Switch (allegedly)."
 Welcome_Intro_Billiam: "Hi, you found me!\nMy name is Billiam!\nI give you information on what things are!"
 Welcome_Intro_Demand: Hover over them for more info. Do it now... or not, we can wait here all day.

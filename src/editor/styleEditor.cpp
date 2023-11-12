@@ -46,7 +46,7 @@ void EStyleEditor::Scan()
 JResPath EStyleEditor::ThemePath(const std::string& name)
 {
     ZoneScopedN("EStyleEditor::ThemePath");
-    return JResPath(JFileSystem::PathSeparators(THEME_FOLDER.fullPath + "/" + name + ".ini"), true);
+    return JResPath(JFileSystem::PathSeparators(THEME_FOLDER.fullPath + "/" + name + ".yaml"), true);
 }
 
 bool EStyleEditor::GetTheme(void* data, int idx, const char** outText)

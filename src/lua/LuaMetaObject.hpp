@@ -34,40 +34,40 @@
 
 namespace LuaCpp {
 
-	extern "C" {
-		/**
-		 * @brief `C` bridge function called the `__newindex` metafunction
-		 *
-		 * @details
-		 * A `C` bridge function that will be used as the `__newindex` metafunction
-		 * for the object. Whenver a `object["key"] = value` is invoked in the 
-		 * `lua` context, the functions will be exectued. The function will
-		 * identify the object associated with the user data and invoke the `_setValue()`
-		 */
-		static int u_newindex(lua_State *L);
+	// extern "C" {
+	// 	/**
+	// 	 * @brief `C` bridge function called the `__newindex` metafunction
+	// 	 *
+	// 	 * @details
+	// 	 * A `C` bridge function that will be used as the `__newindex` metafunction
+	// 	 * for the object. Whenver a `object["key"] = value` is invoked in the 
+	// 	 * `lua` context, the functions will be exectued. The function will
+	// 	 * identify the object associated with the user data and invoke the `_setValue()`
+	// 	 */
+	// 	static int u_newindex(lua_State *L);
 		
-		/**
-		 * @brief `C` bridge function called the `__index` metafunction
-		 *
-		 * @details
-		 * A `C` bridge function that will be used as the `__index` metafunction
-		 * for the object. Whenver a `value = object["key"]` is invoked in the 
-		 * `lua` context, the functions will be exectued. The function will
-		 * identify the object associated with the user data and invoke the `_getValue()`
-		 */
-		static int u_index(lua_State *L);
+	// 	/**
+	// 	 * @brief `C` bridge function called the `__index` metafunction
+	// 	 *
+	// 	 * @details
+	// 	 * A `C` bridge function that will be used as the `__index` metafunction
+	// 	 * for the object. Whenver a `value = object["key"]` is invoked in the 
+	// 	 * `lua` context, the functions will be exectued. The function will
+	// 	 * identify the object associated with the user data and invoke the `_getValue()`
+	// 	 */
+	// 	static int u_index(lua_State *L);
 		
-		/**
-		 * @brief `C` bridge function called the `__call` metafunction
-		 *
-		 * @details
-		 * A `C` bridge function that will be used as the `__call` metafunction
-		 * for the object. Whenver a `object(arguments)` is invoked in the 
-		 * `lua` context, the functions will be exectued. The function will
-		 * identify the object associated with the user data and invoke the `Execute()`
-		 */
-		static int u_call(lua_State *L);
-	}
+	// 	/**
+	// 	 * @brief `C` bridge function called the `__call` metafunction
+	// 	 *
+	// 	 * @details
+	// 	 * A `C` bridge function that will be used as the `__call` metafunction
+	// 	 * for the object. Whenver a `object(arguments)` is invoked in the 
+	// 	 * `lua` context, the functions will be exectued. The function will
+	// 	 * identify the object associated with the user data and invoke the `Execute()`
+	// 	 */
+	// 	static int u_call(lua_State *L);
+	// }
 
 	/**
 	 * @brief Base class for instrumentation of `C++` classes
@@ -77,9 +77,6 @@ namespace LuaCpp {
 	 * the `lua` context. The class is derivation of the `LuaTUserData`
 	 */
 	class LuaMetaObject : public Engine::LuaTUserData {
-		friend int u_newindex(lua_State *L);
-		friend int u_index(lua_State *L);
-		friend int u_call(lua_State *L);
 
 	   protected:
 		/**
@@ -98,6 +95,7 @@ namespace LuaCpp {
 		 * @details
 		 */
 		void _retreiveData();
+public:
 
 		/**
 		 * @brief invoked by the `C` metafunction to get the user value
@@ -130,7 +128,6 @@ namespace LuaCpp {
 		 */
 		virtual int _setValue(Engine::LuaState &L);
 
-	   public:
 		LuaMetaObject(); 
 		
 		/** 

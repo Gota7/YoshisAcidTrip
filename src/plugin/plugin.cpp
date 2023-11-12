@@ -2,7 +2,16 @@
 
 #include "../jsystem/fs.hpp"
 #include "../jsystem/mem.hpp"
-#include "api.hpp"
+#include <set>
+
+#define PLUGIN_COMP_HOOK(var) \
+code = zip.String(#var ".lua"); \
+libBlacklist.emplace(#var ".lua"); \
+if (code) \
+{ \
+    LUA_CTX.CompileString(name + "." #var, *code); \
+    var = true; \
+}
 
 PPlugin::PPlugin(const std::string& name) : zip(JResPath("plg/" + name + ".zip").fullPath), name(name)
 {
@@ -13,37 +22,33 @@ PPlugin::PPlugin(const std::string& name) : zip(JResPath("plg/" + name + ".zip")
         DBG_PRINT("PLUGIN@LSD: Invalid plugin \"" + name + "\".");
         return;
     }
+
+    // Plugin info.
     YAML::Node root = YAML::Load(*yaml);
-    fullname = root["Name"].as<std::string>();
-    version = root["Version"].as<uint32_t>();
+    fullname = root["Name"].IsDefined() ? root["Name"].as<std::string>() : name ;
+    desc = root["Desc"].IsDefined() ? root["Desc"].as<std::string>() : "Some plugin.";
+    author = root["Author"].IsDefined() ? root["Author"].as<std::string>() : "Unknown Author";
+    version = root["Version"].IsDefined() ? root["Version"].as<uint32_t>() : 0;
+
+    // Initial code.
     if (code)
     {
         LUA_CTX.CompileString(name + ".init", *code);
         state = std::move(LUA_CTX.RunWithState(name + ".init", LUA_CTX.newStateFor(name + ".init")));
     }
-    code = zip.String("update.lua");
-    if (code)
+    else state = std::move(LUA_CTX.newState()); // Even though libs also run, we must guarantee init runs first.
+    std::set<std::string> libBlacklist;
+    libBlacklist.emplace("init.lua");
+    PLUGIN_COMP_HOOK(update);
+    PLUGIN_COMP_HOOK(drawUI);
+    PLUGIN_COMP_HOOK(render);
+    PLUGIN_COMP_HOOK(deinit);
+    for (auto file : zip.FileList())
     {
-        LUA_CTX.CompileString(name + ".update", *code);
-        update = true;
-    }
-    code = zip.String("drawUI.lua");
-    if (code)
-    {
-        LUA_CTX.CompileString(name + ".drawUI", *code);
-        drawUI = true;
-    }
-    code = zip.String("render.lua");
-    if (code)
-    {
-        LUA_CTX.CompileString(name + ".render", *code);
-        render = true;
-    }
-    code = zip.String("deinit.lua");
-    if (code)
-    {
-        LUA_CTX.CompileString(name + ".deinit", *code);
-        deinit = true;
+        if (!file.ends_with(".lua") || libBlacklist.find(file) != libBlacklist.end()) continue;
+        code = zip.String(file);
+        LUA_CTX.CompileString(name + "." + file, *code);
+        state = std::move(LUA_CTX.RunWithState(name + "." + file, std::move(state)));
     }
 }
 
@@ -54,26 +59,6 @@ PPlugin::PPlugin(const std::string& name) : zip(JResPath("plg/" + name + ".zip")
 //     // You would push args here.
 //     return lua_pcall(L->getState(), 0, 0, 0); // Number of args, number of results, error function.
 // }
-
-void PPlugin::Update()
-{
-    ZoneScopedN("PPlugin::Update");
-    if (update) state = std::move(LUA_CTX.RunWithState(name + ".update", std::move(state)));
-}
-
-void PPlugin::DrawUI()
-{
-    ZoneScopedN("PPlugin::DrawUI");
-    LUA_IMGUI_CTX_VALID = true;
-    if (drawUI) state = std::move(LUA_CTX.RunWithState(name + ".drawUI", std::move(state)));
-    LUA_IMGUI_CTX_VALID = false;
-}
-
-void PPlugin::Render()
-{
-    ZoneScopedN("PPlugin::Render");
-    if (render) state = std::move(LUA_CTX.RunWithState(name + ".render", std::move(state)));
-}
 
 PPlugin::~PPlugin()
 {

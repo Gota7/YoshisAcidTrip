@@ -6,6 +6,7 @@
 #include "../bin/streams/file.hpp"
 #include "../bin/streams/memory.hpp"
 #include "../fs/convert.hpp"
+#include "../jsystem/window.hpp"
 #include "../plugin/lua.hpp"
 #include <imgui.h>
 
@@ -166,7 +167,7 @@ void EEditor::DrawPopups()
 {
     ZoneScopedN("EEditor::DrawPopups");
     DrawAboutPopup();
-    if (welcomeWindow && !welcomeWindow->Popped()) welcomeWindow->Popup();
+    // if (welcomeWindow && !welcomeWindow->Popped()) welcomeWindow->Popup();
     if (welcomeWindow) welcomeWindow->DrawUI();
 }
 
@@ -175,11 +176,13 @@ void EEditor::DrawUI()
     ZoneScopedN("EEditor::DrawUI");
     // ImGui::ShowDemoWindow();
     DrawMainBar();
+    ImGui::DockSpaceOverViewport();
     DrawPopups();
     for (auto& plugin : plugins)
     {
         plugin->DrawUI();
     }
+    styleEditor.DrawUI();
 }
 
 void EEditor::Render()

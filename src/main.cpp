@@ -23,7 +23,7 @@ int main()
 {
     JWindow window(APP_TITLE);
     MainEditor = JPtrMake(EEditor, window);
-    DBG_PRINT("BUILDTIME@JUNO: " << JFileSystem::ReadAllLines(JResPath("BUILDTIME")));
+    DBG_PRINT("BUILDTIME@LSD: " << JFileSystem::ReadAllLines(JResPath("BUILDTIME")));
     window.Main(Update, Render, DrawUI);
     MainEditor.reset();
     return 0;

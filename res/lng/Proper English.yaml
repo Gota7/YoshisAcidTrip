@@ -1,4 +1,4 @@
-About: Brochure
+About: Production Inquiries
 Build_Folder: Folder Of Build
 Build_Folder_Explain: "I'm afraid that you must select a location for the modified build to be placed.\nThis requirement is for the fact that a build folder is where a playable and distributable modification will be.\nFor convenience, I do recommend setting this to a path accessible by your emulation software."
 Build_Folder_Select: Select Folder Of Build
@@ -11,9 +11,12 @@ Copied_Reddit_Link: Copied reddit link to clipboard.
 Deserialized_Folder: Deserialized Folder
 Deserialized_Folder_Explain: "If \"Create Base Folder From Romfs\" is checked, this will be where to deserialize the romfs to.\nDeserializing the romfs lets you and the editor view and edit the files more easily.\nFor example, BYML is converted to YAML, SARCs are extracted, ZS files decompressed, images converted, etc.\nIf \"Create Base Folder From Romfs\" is not checked, this should be the path to an already deserialized romfs."
 Deserialized_Folder_Select: Select Deserialized Folder
+Done: I No Longer Require Your Services
 Edit: Editorial Tooling
 File: Registry
+Finish: Ensure Finale
 Hello: Hello
+Help: Brochure
 Language: Language
 LSD_Desc: "\tA method of modifying Mario's latest travels."
 LSD_Version: The Trip Of Yoshi Involving Acid - Presently
@@ -40,6 +43,8 @@ Settings: Configuration
 Style: Style
 View: Observation
 Welcome!: I Welcome You
+Welcome_Finish: "We do take delight in your usage of The Trip Of Yoshi Involving Acid.\nDo inform us of your creations."
+Welcome_Finish_Help: If you require assistance, navigate to Brochure->Assistance.
 Welcome_Intro: "Welcome to Yoshi's Acid Trip!\nA lucid way to edit Super Mario Bros. Wonder for the Nintendo Switch (allegedly)."
 Welcome_Intro_Billiam: "Hi, you found me!\nMy name is Billiam!\nI give you information on what things are!"
 Welcome_Intro_Demand: Hover over them for more info. Do it now... or not, we can wait here all day.
