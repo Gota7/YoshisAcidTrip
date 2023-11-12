@@ -2,6 +2,7 @@
 bin/
 build/
 res/BUILDTIME
+res/settings.yaml
 ./run
 ./clean
 buildStatic

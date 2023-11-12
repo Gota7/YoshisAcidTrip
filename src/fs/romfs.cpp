@@ -3,6 +3,8 @@
 FRomfs::FRomfs(const JResPath& baseDir, const JResPath& patchDir) : baseDir(baseDir), patchDir(patchDir)
 {
     ZoneScopedN("FRomfs::FRomfs");
+    if (baseDir.fullPath.ends_with("/")) this->baseDir.fullPath = baseDir.fullPath.substr(0, baseDir.fullPath.size() - 1);
+    if (patchDir.fullPath.ends_with("/")) this->patchDir.fullPath = patchDir.fullPath.substr(0, patchDir.fullPath.size() - 1);
 }
 
 JResPath FRomfs::BasePath(const std::string& path)

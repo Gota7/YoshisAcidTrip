@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../fs/convert.hpp"
 #include "fileBrowser.hpp"
 #include <string>
 
@@ -10,6 +11,7 @@ class EEditor;
 class EWelcome
 {
     EEditor& editor;
+    FConvertProgressCtx ctx;
     imgui_addons::ImGuiFileBrowser fb;
     std::string romfsPath;
     std::string basePath;

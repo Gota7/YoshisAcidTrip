@@ -5,8 +5,8 @@
 #include <set>
 
 #define PLUGIN_COMP_HOOK(var) \
-code = zip.String(#var ".lua"); \
-libBlacklist.emplace(#var ".lua"); \
+code = zip.String(#var ".hook.lua"); \
+libBlacklist.emplace(#var ".hook.lua"); \
 if (code) \
 { \
     LUA_CTX.CompileString(name + "." #var, *code); \
@@ -16,7 +16,7 @@ if (code) \
 PPlugin::PPlugin(const std::string& name) : zip(JResPath("plg/" + name + ".zip").fullPath), name(name)
 {
     auto yaml = zip.String("plugin.yaml");
-    auto code = zip.String("init.lua");
+    auto code = zip.String("init.hook.lua");
     if (!yaml)
     {
         DBG_PRINT("PLUGIN@LSD: Invalid plugin \"" + name + "\".");
@@ -38,7 +38,7 @@ PPlugin::PPlugin(const std::string& name) : zip(JResPath("plg/" + name + ".zip")
     }
     else state = std::move(LUA_CTX.newState()); // Even though libs also run, we must guarantee init runs first.
     std::set<std::string> libBlacklist;
-    libBlacklist.emplace("init.lua");
+    libBlacklist.emplace("init.hook.lua");
     PLUGIN_COMP_HOOK(update);
     PLUGIN_COMP_HOOK(drawUI);
     PLUGIN_COMP_HOOK(render);

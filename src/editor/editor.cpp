@@ -74,6 +74,18 @@ tex(JResPath("tex/icon.png"))
 
 }
 
+FRomfs& EEditor::Romfs()
+{
+    ZoneScopedN("EEditor::Romfs");
+    auto mod = settings.mods.find(settings.currMod);
+    if (mod == settings.mods.end())
+    {
+        DBG_PRINT("EDITOR@LSD: No mod loaded :<");
+        abort();
+    }
+    return mod->second.romfs;
+}
+
 std::size_t EEditor::NumTalkingFlowerFrames() const
 {
     ZoneScopedN("EEditor::NumTalkingFlowerFrames");
@@ -167,7 +179,7 @@ void EEditor::DrawPopups()
 {
     ZoneScopedN("EEditor::DrawPopups");
     DrawAboutPopup();
-    // if (welcomeWindow && !welcomeWindow->Popped()) welcomeWindow->Popup();
+    if (welcomeWindow && !welcomeWindow->Popped()) welcomeWindow->Popup();
     if (welcomeWindow) welcomeWindow->DrawUI();
 }
 
@@ -182,7 +194,6 @@ void EEditor::DrawUI()
     {
         plugin->DrawUI();
     }
-    styleEditor.DrawUI();
 }
 
 void EEditor::Render()

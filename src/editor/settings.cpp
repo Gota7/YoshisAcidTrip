@@ -11,18 +11,20 @@
 
 */
 
-void ESettingsMod::Load(YAML::Node& node)
+ESettingsMod::ESettingsMod(YAML::Node& node) : romfs(JResPath(node["Base"].as<std::string>(), true), JResPath(node["Patch"].as<std::string>(), true))
 {
-    ZoneScopedN("ESettingsMod::Load");
+    ZoneScopedN("ESettingsMod::ESettingsMod");
+    buildPath = node["Build"].as<std::string>();
+    lastLevel = node["LastLevel"].as<std::string>();
 }
 
 void ESettingsMod::Save(YAML::Emitter& node, const std::string& name)
 {
     ZoneScopedN("ESettingsMod::Save");
     node << YAML::Key << name << YAML::Value << YAML::BeginMap;
-    YAML::KeyValue(node, "Base", basePath);
+    YAML::KeyValue(node, "Base", romfs.BasePath("").fullPath);
     YAML::KeyValue(node, "Build", buildPath);
-    YAML::KeyValue(node, "Patch", patchPath);
+    YAML::KeyValue(node, "Patch", romfs.PatchPath("").fullPath);
     YAML::KeyValue(node, "LastLevel", lastLevel);
     node << YAML::EndMap;
 }
@@ -59,10 +61,10 @@ void ESettings::Load(JWindow& window)
             // Mod.
             currMod = root["Mod"].as<std::string>();
             YAML::Node mods = root["Mods"];
-            // for (auto& mod : mods)
-            // {
-            //     mod.
-            // }
+            for (auto mod : mods)
+            {
+                this->mods.emplace(mod.first.as<std::string>(), mod.second);
+            }
 
         }
     }

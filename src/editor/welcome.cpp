@@ -21,7 +21,8 @@ bool EWelcome::Popped()
 void EWelcome::Popup()
 {
     ZoneScopedN("EWelcome::Popup");
-    ImGui::OpenPopup(editor.text["Welcome!"].c_str());
+    if (converting) ImGui::OpenPopup(editor.text["Converting_Romfs"].c_str());
+    else ImGui::OpenPopup(editor.text["Welcome!"].c_str());
     popped = true;
 }
 
@@ -236,6 +237,7 @@ void EWelcome::DrawUI()
                     {
                         ImGui::CloseCurrentPopup();
                         converting = true;
+                        popped = false;
                     }
                     ImGui::EndTabItem();
                 }
@@ -246,11 +248,26 @@ void EWelcome::DrawUI()
             ImGui::EndPopup();
 
         }
-        else
+    }
+    else
+    {
+
+        // Time to convert the romfs.
+        if (ImGui::BeginPopupModal(editor.text["Converting_Romfs"].c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
-
-            // Time to convert the romfs.
-
+            auto romfs = FConvert::MakeEditorRomfs(JResPath(romfsPath, true), JResPath(basePath, true), JResPath(patchPath, true), ctx);
+            ImGui::ProgressBar((float)ctx.currStep / ctx.numSteps);
+            ImGui::Text(ctx.convStepDesc.c_str());
+            if (ctx.full)
+            {
+                ESettingsMod mod(FRomfs(JResPath(basePath, true), JResPath(patchPath, true)), buildPath);
+                editor.settings.mods.emplace(modName, mod);
+                editor.settings.currMod = modName;
+                editor.settings.Save();
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
         }
+
     }
 }

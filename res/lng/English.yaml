@@ -7,12 +7,16 @@ Create_Deserialized_Folder_Explain: "Check this if you need to create a base fol
 Credit_Gota: Gota7 - Lead dev.
 Credit_Ndymario: Ndymario - Mac support and testing.
 Credit_Payonica: Payanica - Ideas, resources, testing.
+Converting_Romfs: Converting Romfs...
 Copied_Reddit_Link: Copied reddit link to clipboard.
+Decompressing_Files: Decompressing Files...
 Deserialized_Folder: Deserialized Folder
 Deserialized_Folder_Explain: "If \"Create Base Folder From Romfs\" is checked, this will be where to deserialize the romfs to.\nDeserializing the romfs lets you and the editor view and edit the files more easily.\nFor example, BYML is converted to YAML, SARCs are extracted, ZS files decompressed, images converted, etc.\nIf \"Create Base Folder From Romfs\" is not checked, this should be the path to an already deserialized romfs."
 Deserialized_Folder_Select: Select Deserialized Folder
+Deserializing_YAML: Deserializing YAML...
 Done: Done
 Edit: Edit
+Extracting_Archives: Extracting Archives...
 File: File
 Finish: Finish
 Hello: Hello
@@ -39,6 +43,7 @@ Romfs_Folder_Conv_Explain: "\"Romfs Folder\" gets deserialized/converted into th
 Romfs_Folder_Explain: "Path to a completely unmodified romfs folder of Mario Wonder.\nRight click me to copy a link on how to dump the romfs for the game to your clipboard!"
 Romfs_Folder_Select: Select Romfs Folder
 Settings: Settings
+Starting_Conversion: Starting Conversion...
 Style: Style
 View: View
 Welcome!: Welcome!

@@ -50,6 +50,9 @@ public:
     // Make a new editor.
     EEditor(JWindow& window);
 
+    // Get romfs.
+    FRomfs& Romfs();
+
     // Get number of talking flower frames.
     std::size_t NumTalkingFlowerFrames() const;
 

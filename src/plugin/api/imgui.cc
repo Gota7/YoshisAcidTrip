@@ -8,6 +8,12 @@ bool LUA_IMGUI_CTX_VALID = false;
 extern "C"
 {
 
+    /**
+     * Show the demo window of ImGui.
+     * @name imgui.showDemoWindow
+     * @param bool open: If the window show be open (optional).
+     * @return bool: If the window is open.
+    */
     LUA_FUNC(_imgui_showDemoWindow)
     {
         ZoneScoped;
@@ -16,7 +22,8 @@ extern "C"
         LUA_ARGCCHECK(argv < 2);
         if (argv == 1) LUA_ARGCHECK(lua_isboolean(L, 1));
         bool val = (bool)((argv == 1) ? lua_toboolean(L, 1) : true);
-        ImGui::ShowDemoWindow(&val);
+        if (argv == 1) ImGui::ShowDemoWindow(&val);
+        else ImGui::ShowDemoWindow();
         lua_pushboolean(L, val);
         return 1;
     }
@@ -25,6 +32,7 @@ extern "C"
 
 std::shared_ptr<LuaLibrary> PLibImguiGet()
 {
+    ZoneScopedN("PLibImguiGet");
     std::shared_ptr<LuaLibrary> ret = std::make_shared<LuaLibrary>("imgui");
     ret->AddCFunction("showDemoWindow", _imgui_showDemoWindow);
     return ret;

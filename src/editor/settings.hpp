@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../fs/romfs.hpp"
 #include "../jsystem/mem.hpp"
 #include "../yaml/helper.hpp"
 #include "style.hpp"
@@ -21,13 +22,15 @@ class JWindow;
 class ESettingsMod
 {
 public:
-    std::string basePath;
+    FRomfs romfs;
     std::string buildPath;
-    std::string patchPath;
     std::string lastLevel = "";
 
+    // Make a mod.
+    ESettingsMod(const FRomfs& romfs, const std::string& buildPath) : romfs(romfs), buildPath(buildPath) {}
+
     // Load from YAML.
-    void Load(YAML::Node& node);
+    ESettingsMod(YAML::Node& node);
 
     // Save to YAML.
     void Save(YAML::Emitter& node, const std::string& name);

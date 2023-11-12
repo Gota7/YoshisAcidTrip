@@ -3,8 +3,9 @@
 #include "../bin/formats/byml.hpp"
 #include "../bin/formats/sarc.hpp"
 #include "../bin/formats/zstd.hpp"
-#include "conversionFile.hpp"
 #include <functional>
+
+#define MAX_NUM_STEPS 10
 
 // Using an output file and one with extension removed, debinarize into input files.
 using FConvertItemFunc = std::function<std::pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>(FRomfs&, const std::string&, const std::string&)>;
@@ -16,23 +17,32 @@ inline bool FConvertEndsWith(std::string const& value, std::string const& ending
     return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
-std::optional<FRomfs> FConvert::MakeEditorRomfs(const JResPath& srcDir, const JResPath& baseDir, const JResPath& patchDir)
+std::optional<FRomfs> FConvert::MakeEditorRomfs(const JResPath& srcDir, const JResPath& baseDir, const JResPath& patchDir, FConvertProgressCtx& ctx)
 {
     ZoneScopedN("FConvert::MakeEditorRomfs");
 
-    // Make sure source exists.
-    if (!std::filesystem::exists(srcDir.fullPath)) return std::nullopt;
+    // Init.
+    std::optional<FRomfs> ret;
+    if (ctx.init)
+    {
 
-    // Make directories.
-    std::filesystem::create_directories(baseDir.fullPath);
-    std::filesystem::create_directories(patchDir.fullPath);
-    std::filesystem::copy(srcDir.fullPath, baseDir.fullPath, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+        // Make sure source exists.
+        if (!std::filesystem::exists(srcDir.fullPath)) return std::nullopt;
 
-    // Add initial version.
-    std::optional<FRomfs> ret(FRomfs(baseDir, patchDir));
-    FConversionFile file(*ret, true);
-    file.Save(*ret);
-    UpdateRomfs(*ret);
+        // Make directories.
+        std::filesystem::create_directories(baseDir.fullPath);
+        std::filesystem::create_directories(patchDir.fullPath);
+        std::filesystem::copy(srcDir.fullPath, baseDir.fullPath, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+
+        // Add initial version.
+        ret = FRomfs(baseDir, patchDir);
+        if (!ctx.file) ctx.file = JPtrMake(FConversionFile, *ret, true);
+        ctx.file->Save(*ret);
+        ctx.init = false;
+
+    }
+    else ret = FRomfs(baseDir, patchDir);
+    UpdateRomfs(*ret, ctx);
     return ret;
 
 }
@@ -121,7 +131,7 @@ void FConvertStepZStandard(FRomfs& romfs, FConversionFileStep& step)
     });
 }
 
-// Add SARC to step.
+// Add SARC to step. TODO: RUN SARC RECURSIVELY AND ZSTD!!!
 void FConvertStepSARC(FRomfs& romfs, FConversionFileStep& step)
 {
     ZoneScopedN("FConvertStepSARC");
@@ -191,45 +201,78 @@ void FConvertStepBYML(FRomfs& romfs, FConversionFileStep& step)
     });
 }
 
+// Calculate step info for context. Returns the max step.
+std::size_t FConvertCtxUpdate(FConvertProgressCtx& ctx, unsigned int version, const std::string& desc)
+{
+    ZoneScopedN("FConvertCtxUpdate");
+    if (ctx.stepCompleted)
+    {
+        ctx.currStep = 0;
+        ctx.numSteps = ctx.file->steps.size();
+        ctx.version = version;
+        ctx.convStepDesc = desc;
+    }
+    std::size_t max = std::min(ctx.numSteps, ctx.currStep + MAX_NUM_STEPS);
+    ctx.stepCompleted = max == ctx.numSteps;
+    ctx.full = ctx.numSteps - ctx.currStep >= MAX_NUM_STEPS;
+    return max;
+}
+
 // Version 1 - ZStandard (de)compression.
-void FConvertVersion1(FRomfs& romfs, FConversionFile& convFile)
+void FConvertVersion1(FRomfs& romfs, FConvertProgressCtx& ctx)
 {
     ZoneScopedN("FConvertVersion1");
-    for (auto& step : convFile.steps)
-        FConvertStepZStandard(romfs, step);
+    std::size_t max = FConvertCtxUpdate(ctx, 0, "Decompressing files...");
+    for (std::size_t i = ctx.currStep; i < max; i++)
+    {
+        FConvertStepZStandard(romfs, ctx.file->steps[i]);
+    }
+    ctx.currStep = max;
 }
 
 // Version 2 - SARC extraction. TODO: HANDLE RECURSIVE FILES!!!
-void FConvertVersion2(FRomfs& romfs, FConversionFile& convFile)
+void FConvertVersion2(FRomfs& romfs, FConvertProgressCtx& ctx)
 {
     ZoneScopedN("FConvertVersion2");
-    for (auto& step : convFile.steps)
-        FConvertStepSARC(romfs, step);
-    FConvertVersion1(romfs, convFile); // Important to make sure ZStandard files in the SARC are decompressed too.
+    std::size_t max = FConvertCtxUpdate(ctx, 1, "Extracting archives...");
+    for (std::size_t i = ctx.currStep; i < max; i++)
+    {
+        FConvertStepSARC(romfs, ctx.file->steps[i]);
+    }
+    ctx.currStep = max;
 }
 
 // Version 3 - Deserialize BYML.
-void FConvertVersion3(FRomfs& romfs, FConversionFile& convFile)
+void FConvertVersion3(FRomfs& romfs, FConvertProgressCtx& ctx)
 {
     ZoneScopedN("FConvertVersion3");
-    for (auto& step : convFile.steps)
-        FConvertStepBYML(romfs, step);
+    std::size_t max = FConvertCtxUpdate(ctx, 2, "Deserializing YAML...");
+    for (std::size_t i = ctx.currStep; i < max; i++)
+    {
+        FConvertStepBYML(romfs, ctx.file->steps[i]);
+    }
+    ctx.currStep = max;
 }
 
-bool FConvert::UpdateRomfs(FRomfs& romfs, bool forceReFileChecks)
+bool FConvert::UpdateRomfs(FRomfs& romfs, FConvertProgressCtx& ctx, bool forceReFileChecks)
 {
     ZoneScopedN("FConvert::UpdateRomfs");
-    FConversionFile convFile(romfs, false);
-    if (convFile.version == VERSION_INVALID)
+    if (!ctx.file) ctx.file = JPtrMake(FConversionFile, romfs, false);
+    if (ctx.file->version == VERSION_INVALID)
     {
         DBG_PRINT("ROMFS@LSD: Can not mix and match base and patch versions!");
+        ctx.file = nullptr;
         return false;
     }
-    if (forceReFileChecks || convFile.version < 1) FConvertVersion1(romfs, convFile);
-    if (forceReFileChecks || convFile.version < 2) FConvertVersion2(romfs, convFile);
-    if (forceReFileChecks || convFile.version < 3) FConvertVersion3(romfs, convFile);
-    convFile.version = 3;
-    convFile.Save(romfs);
+    if (ctx.version < 1 && (forceReFileChecks || ctx.file->version < 1)) FConvertVersion1(romfs, ctx);
+    if (!ctx.full && ctx.version < 2 && (forceReFileChecks || ctx.file->version < 2)) FConvertVersion2(romfs, ctx);
+    if (!ctx.full && ctx.version < 3 && (forceReFileChecks || ctx.file->version < 3)) FConvertVersion3(romfs, ctx);
+    if (!ctx.full)
+    {
+        ctx.file->version = 3;
+        ctx.file->Save(romfs);
+    }
+    ctx.full = !ctx.full; // Signal we are done if we have nothing left to convert, otherwise make sure user knows we are not done.
     return true;
 }
 
