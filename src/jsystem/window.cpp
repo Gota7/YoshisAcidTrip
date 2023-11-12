@@ -362,7 +362,7 @@ JWindow::~JWindow()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    // JFrameBuffer::CleanupMainBuffer();
+    JFrameBuffer::CleanupMainBuffer();
     glfwDestroyWindow(window);
     glfwTerminate();
 }

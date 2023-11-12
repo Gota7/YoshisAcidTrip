@@ -30,4 +30,16 @@ void operator delete[](void* p) throw()
     free(p);
 }
 
+void operator delete(void* p, std::size_t)
+{
+    TracyFree(p);
+    free(p);
+}
+
+void operator delete[](void* p, std::size_t)
+{
+    TracyFree(p)
+    free(p);
+}
+
 #endif

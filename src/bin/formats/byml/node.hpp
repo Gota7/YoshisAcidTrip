@@ -58,6 +58,9 @@ struct BYMLNodeData
     // Emit YAML. Note that the base path is the base file name of the files to save.
     virtual void EmitYAML(YAML::Emitter& node, const JResPath& basePath, int& currFileInd) = 0;
 
+    // We need virtual destructor for memory management.
+    virtual ~BYMLNodeData() {};
+
 };
 
 // BYML Node.

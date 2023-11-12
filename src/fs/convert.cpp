@@ -27,12 +27,19 @@ std::optional<FRomfs> FConvert::MakeEditorRomfs(const JResPath& srcDir, const JR
     {
 
         // Make sure source exists.
-        if (!std::filesystem::exists(srcDir.fullPath)) return std::nullopt;
+        std::string src = srcDir.fullPath;
+        if (src.ends_with("/")) src = src.substr(0, src.length() - 1);
+        std::string base = baseDir.fullPath;
+        if (base.ends_with("/")) base = base.substr(0, base.length() - 1);
+        std::string patch = patchDir.fullPath;
+        if (patch.ends_with("/")) patch = patch.substr(0, patch.length() - 1);
+        if (!std::filesystem::exists(src)) return std::nullopt;
 
         // Make directories.
-        std::filesystem::create_directories(baseDir.fullPath);
-        std::filesystem::create_directories(patchDir.fullPath);
-        std::filesystem::copy(srcDir.fullPath, baseDir.fullPath, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+        std::filesystem::create_directories(base);
+        std::filesystem::create_directories(patch);
+        std::filesystem::remove(base); // Wtf windows the whole point of overwrite existing is to um.
+        std::filesystem::copy(src, base, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 
         // Add initial version.
         ret = FRomfs(baseDir, patchDir);
@@ -116,15 +123,19 @@ void FConvertStepZStandard(FRomfs& romfs, FConversionFileStep& step)
     FConvertItem(romfs, step, { ".zs" }, "zstd", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
     {
         DBG_PRINT("CONVERT@LSD: Decompressing \"" << romfs.BasePath(filePath).fullPath << "\".");
-        BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
-        BStreamFile dst(romfs.BasePath(filePathNoExt), BStreamMode::Write);
-        ZSTD::Decompress(src, dst, src.Size());
+        {
+            BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
+            BStreamFile dst(romfs.BasePath(filePathNoExt), BStreamMode::Write);
+            ZSTD::Decompress(src, dst, src.Size());
+        } // We can't delete the file until it is out of scope so.
         std::filesystem::remove(romfs.BasePath(filePath).fullPath);
         if (romfs.FileExistsInPatchPath(filePath))
         {
-            BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
-            BStreamFile dst(romfs.PatchPath(filePathNoExt), BStreamMode::Write);
-            ZSTD::Decompress(src, dst, src.Size());
+            {
+                BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
+                BStreamFile dst(romfs.PatchPath(filePathNoExt), BStreamMode::Write);
+                ZSTD::Decompress(src, dst, src.Size());
+            }
             std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
         }
         return std::make_pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>({ FConversionFileInputMode::String }, { filePathNoExt });
@@ -138,36 +149,38 @@ void FConvertStepSARC(FRomfs& romfs, FConversionFileStep& step)
     FConvertItem(romfs, step, { ".sarc", ".blarc", ".pack", ".baatarc", ".bkres", ".genvb", ".bfarc"}, "sarc", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
     {
         DBG_PRINT("CONVERT@LSD: Extracting \"" << romfs.BasePath(filePath).fullPath << "\".");
-        BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
-        SARC sarc(src);
-        std::filesystem::create_directory(romfs.BasePath(filePathNoExt).fullPath);
         std::vector<FConversionFileInput> inputs;
         std::vector<FConversionFileInputMode> modes;
-        for (auto& file : sarc.GetFilenames())
         {
-            BStream& src = sarc.Open(file, BStreamMode::Read);
-            auto extFile = romfs.BasePath(filePathNoExt + "/" + file);
-            std::size_t folderSlashInd = extFile.fullPath.rfind('/');
-            if (folderSlashInd != std::string::npos) std::filesystem::create_directories(extFile.fullPath.substr(0, folderSlashInd));
-            BStreamFile dst(extFile, BStreamMode::Write);
-            dst.Copy(src, src.Size());
-            modes.push_back(FConversionFileInputMode::String);
-            inputs.push_back(filePathNoExt + "/" + file);
-        }
-        std::filesystem::remove(romfs.BasePath(filePath).fullPath);
-        if (romfs.FileExistsInPatchPath(filePath))
-        {
+            BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
+            SARC sarc(src);
+            std::filesystem::create_directory(romfs.BasePath(filePathNoExt).fullPath);
             for (auto& file : sarc.GetFilenames())
             {
                 BStream& src = sarc.Open(file, BStreamMode::Read);
-                auto extFile = romfs.PatchPath(filePathNoExt + "/" + file);
+                auto extFile = romfs.BasePath(filePathNoExt + "/" + file);
                 std::size_t folderSlashInd = extFile.fullPath.rfind('/');
                 if (folderSlashInd != std::string::npos) std::filesystem::create_directories(extFile.fullPath.substr(0, folderSlashInd));
                 BStreamFile dst(extFile, BStreamMode::Write);
                 dst.Copy(src, src.Size());
+                modes.push_back(FConversionFileInputMode::String);
+                inputs.push_back(filePathNoExt + "/" + file);
             }
-            std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
+            if (romfs.FileExistsInPatchPath(filePath))
+            {
+                for (auto& file : sarc.GetFilenames())
+                {
+                    BStream& src = sarc.Open(file, BStreamMode::Read);
+                    auto extFile = romfs.PatchPath(filePathNoExt + "/" + file);
+                    std::size_t folderSlashInd = extFile.fullPath.rfind('/');
+                    if (folderSlashInd != std::string::npos) std::filesystem::create_directories(extFile.fullPath.substr(0, folderSlashInd));
+                    BStreamFile dst(extFile, BStreamMode::Write);
+                    dst.Copy(src, src.Size());
+                }
+                std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
+            }
         }
+        std::filesystem::remove(romfs.BasePath(filePath).fullPath);
         return std::make_pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>(std::move(modes), std::move(inputs));
     });
 }
@@ -179,22 +192,26 @@ void FConvertStepBYML(FRomfs& romfs, FConversionFileStep& step)
     FConvertItem(romfs, step, { ".byml", ".bgyml", ".byaml" }, "byml", [](FRomfs& romfs, const std::string& filePath, const std::string& filePathNoExt)
     {
         DBG_PRINT("CONVERT@LSD: Deserializing \"" << romfs.BasePath(filePath).fullPath << "\".");
-        BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
-        BYML byml(src);
-        int numFiles = byml.WriteYAML(romfs.BasePath(filePathNoExt + ".gyml"));
         std::vector<FConversionFileInputMode> modes = { FConversionFileInputMode::String };
         std::vector<FConversionFileInput> inputs = { filePathNoExt + ".gyml" };
-        for (int i = 0; i < numFiles; i++)
         {
-            modes.emplace_back(FConversionFileInputMode::String);
-            inputs.emplace_back(filePathNoExt + ".gyml." + std::to_string(i));
+            BStreamFile src(romfs.BasePath(filePath), BStreamMode::Read);
+            BYML byml(src);
+            int numFiles = byml.WriteYAML(romfs.BasePath(filePathNoExt + ".gyml"));
+            for (int i = 0; i < numFiles; i++)
+            {
+                modes.emplace_back(FConversionFileInputMode::String);
+                inputs.emplace_back(filePathNoExt + ".gyml." + std::to_string(i));
+            }
         }
         std::filesystem::remove(romfs.BasePath(filePath).fullPath);
         if (romfs.FileExistsInPatchPath(filePath))
         {
-            BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
-            BYML byml(src);
-            byml.WriteYAML(romfs.PatchPath(filePathNoExt + ".gyml")); // Minor bug here with no files being used from path and instead base but come on when will this happen.
+            {
+                BStreamFile src(romfs.PatchPath(filePath), BStreamMode::Read);
+                BYML byml(src);
+                byml.WriteYAML(romfs.PatchPath(filePathNoExt + ".gyml")); // Minor bug here with no files being used from path and instead base but come on when will this happen.
+            }
             std::filesystem::remove(romfs.PatchPath(filePath).fullPath);
         }
         return std::make_pair<std::vector<FConversionFileInputMode>, std::vector<FConversionFileInput>>(std::move(modes), std::move(inputs));

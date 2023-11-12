@@ -20,6 +20,7 @@ SARC::SARC(BStream& src)
     if (!maybeMagic)
     {
         DBG_PRINT("SARC@LSD: Unreadable stream.");
+        return;
     }
     if (*maybeMagic != std::string("SARC"))
     {

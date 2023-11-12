@@ -60,8 +60,8 @@ tex(JResPath("tex/icon.png"))
     }
 
     // Load settings and text.
-    PLua::InitAPI();
-    plugins.emplace_back(JPtrMake(PPlugin, "Test"));
+    // PLua::InitAPI();
+    // plugins.emplace_back(JPtrMake(PPlugin, "Test"));
     settings.Load(window);
     YAML::Node node = YAML::LoadFile(JResPath("lng/" + settings.lang + ".yaml").fullPath);
     text = node.as<std::map<std::string, std::string>>();
@@ -102,10 +102,10 @@ JTexture& EEditor::TalkingFlowerFrame(std::size_t ind)
 void EEditor::Update()
 {
     ZoneScopedN("EEditor::Update");
-    for (auto& plugin : plugins)
-    {
-        plugin->Update();
-    }
+    // for (auto& plugin : plugins)
+    // {
+    //     plugin->Update();
+    // }
 }
 
 void EEditor::DrawMainBar()
@@ -190,10 +190,10 @@ void EEditor::DrawUI()
     DrawMainBar();
     ImGui::DockSpaceOverViewport();
     DrawPopups();
-    for (auto& plugin : plugins)
-    {
-        plugin->DrawUI();
-    }
+    // for (auto& plugin : plugins)
+    // {
+    //     plugin->DrawUI();
+    // }
 }
 
 void EEditor::Render()
@@ -207,8 +207,8 @@ void EEditor::Render()
     // renderBatch.AddVertex({ glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) });
     // renderBatch.AddVertex({ glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) });
     // renderBatch.RenderAndFlush();
-    for (auto& plugin : plugins)
-    {
-        plugin->Render();
-    }
+    // for (auto& plugin : plugins)
+    // {
+    //     plugin->Render();
+    // }
 }

@@ -16,9 +16,9 @@ public:
     BStreamFile(const JResPath& path, BStreamMode mode) : path(path), mode(mode)
     {
         if (!JFileSystem::FileExists(path)) JFileSystem::WriteAllBytes(path, {});
-        if (mode == BStreamMode::Read) file = fopen(path.fullPath.c_str(), "r");
-        else if (mode == BStreamMode::Write) file = fopen(path.fullPath.c_str(), "w");
-        else file = fopen(path.fullPath.c_str(), "r+");
+        if (mode == BStreamMode::Read) file = fopen(path.fullPath.c_str(), "rb");
+        else if (mode == BStreamMode::Write) file = fopen(path.fullPath.c_str(), "wb");
+        else file = fopen(path.fullPath.c_str(), "rb+");
         fseek(file, 0, SEEK_SET);
     }
 
