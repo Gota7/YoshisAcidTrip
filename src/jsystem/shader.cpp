@@ -69,6 +69,7 @@ JShader::JShader(const JResPath& vertexPath, const JResPath& fragmentPath, const
 void JShader::Bind()
 {
     ZoneScopedN("JShader::Bind");
+    if (CurrShader == this) return;
     glUseProgram(program);
     CurrShader = this;
 }

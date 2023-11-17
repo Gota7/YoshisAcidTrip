@@ -7,6 +7,7 @@
 #include "../jsystem/vertex.hpp"
 #include "../plugin/plugin.hpp"
 #include "level.hpp"
+#include "levelView.hpp"
 #include "settings.hpp"
 #include "styleEditor.hpp"
 #include "welcome.hpp"
@@ -17,6 +18,7 @@ class JWindow;
 // Main editor interface.
 class EEditor
 {
+    JShader shaderJ2d;
 public:
     JWindow& window;
     JPtr<ELevel> level;
@@ -33,6 +35,7 @@ public:
     JShader shdTest;
     JRenderBatch<JVertexUV> renderBatch;
     JTexture tex;
+    ELevelView levelView;
 
 private:
 

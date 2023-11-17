@@ -11,6 +11,7 @@
 #include <imgui.h>
 
 EEditor::EEditor(JWindow& window) :
+shaderJ2d(JResPath("shd/j2d.vert"), JResPath("shd/j2d.frag"), {}, 0),
 window(window),
 settings(window),
 styleEditor(*this, settings),
@@ -194,6 +195,7 @@ void EEditor::DrawUI()
     // {
     //     plugin->DrawUI();
     // }
+    levelView.DrawUI("Test Level");
 }
 
 void EEditor::Render()
@@ -211,4 +213,7 @@ void EEditor::Render()
     // {
     //     plugin->Render();
     // }
+    YAML::Node node;
+    shaderJ2d.Bind();
+    levelView.Render(node);
 }

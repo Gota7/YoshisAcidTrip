@@ -70,7 +70,6 @@ public:
     bool AddVertex(const T& vtx)
     {
         ZoneScopedN("JRenderBatch::AddVertex");
-        assert(mode != JRenderBatchMode::Lines);
         assert(active);
         if (vtxMemory && currVertex < mesh->buffer->VertexCount())
         {
@@ -86,7 +85,7 @@ public:
     bool AddLine(const T& a, const T& b, const glm::vec3& cameraPos, float thickness)
     {
         ZoneScopedN("DScenarioEmitEdge");
-        assert(mode == JRenderBatchMode::Lines);
+        assert(mode == JRenderBatchMode::Lines || mode == JRenderBatchMode::Quads);
         assert(active);
 
         /*
@@ -119,10 +118,14 @@ public:
             a.pos - b.pos,                          // Direction of the line.
             (a.pos + b.pos) / 2.0f - cameraPos)     // Direction of the camera to midpoint of line.
         ) * thickness / 2.0f;
-        T a0, a1 = a;
+        T a0, a1;
+        a0 = a;
+        a1 = a;
         a0.pos = a.pos - n;
         a1.pos = a.pos + n;
-        T b0, b1 = b;
+        T b0, b1;
+        b0 = b;
+        b1 = b;
         b0.pos = b.pos - n;
         b1.pos = b.pos + n;
         AddVertex(a0); // Bottom left.

@@ -16,9 +16,9 @@ Each folder/lib in the `src` folder is used for a particular task and is assigne
 | Editor | E | Main editor UI code. |
 | Hoganshi | H | Used for rendering tiles. |
 | JSystem | J | Juno system. Slightly platform-independent rendering system for Gota's Galactic Journey. This version has much stripped out to be just for OpenGL now. |
-| Mario | M | For Mario-Wonder specific formats and data. |
+| Math | M | For math helpers. |
+| Plugin | P | Editor plugin support. |
 | Texture | T | For loading texture data. |
-| Zu | Z | 2d rendering library for OpenGL. |
 
 ## Building
 Building is done with docker using the [scuba](https://github.com/JonathonReinhart/scuba) build system. Install docker and scuba on your system for release builds. For example, to build for Windows, type `scuba windows` in a CMD cd'd to the folder of this editor.

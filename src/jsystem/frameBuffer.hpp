@@ -42,6 +42,9 @@ public:
     // Start drawing to current framebuffer.
     void Bind();
 
+    // Get texture.
+    JTexture& GetTex();
+
     // Cleanup framebuffer stuff.
     ~JFrameBuffer();
 
